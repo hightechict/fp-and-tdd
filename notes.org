@@ -1,0 +1,71 @@
+#+TITLE: Functional Programming and Test Driven Development
+#+AUTHOR:    Bas Bossink
+#+EMAIL:     bas.bossink@gmail.com
+#+LANGUAGE:  en
+#+OPTIONS:   num:nil toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+STARTUP: context
+* Functional Programming and Test Driven Development
+** Intro Scheme
+*** Why Scheme?
+- purly functional
+- dynamically typed
+- almost no syntax, easy to explain
+- small
+
+** Scheme the language
+*** Scheme is a LISP dialect (LISt Processing)
+**** List is the central datastructure of the syntax and the language
+***** Definition
+- '(' elem elem ')'
+- repl: (1 2 3)
+- the first element is interpreted as a procedure name, the rest of
+  the list are the arguments
+- repl: (+ 1 2 3)
+***** Creating lists
+- repl: (list 1 2 3)
+- repl: (quote (1 2 3))
+- repl '(1 2 3)
+****** Building lists from elements
+- repl: (cons 1 (cons 2 (cons 3 '())))
+- repl: (cons 1 2)
+****** Deconstructing lists
+- repl: (car '(1 2 3))
+- repl: (cdr '(1 2 3))
+****** Definitions, Bindings
+- repl: (define fred "Yabadabha doo")
+- repl: (fred)
+- repl: (list fred)
+****** Function definitions
+- repl: (define (square x) (* x x))
+- repl: (square 2)
+- repl: (define (length x y) (sqrt (+ (square x) (square y))))
+- repl: (length 3 4)
+****** Anonymous functions, Lambda expressions
+- repl: (lambda (x) (* x x))
+- repl: ((lambda (x) (* x x)) 2)
+- repl: (define square-it (lambda (x) (* x x)))
+****** Block structure
+- repl: (define (length x y) (define (square x) (* x x)) (sqrt (+
+  (square x) (square y))))
+- repl: (define (root a b c) (let ((disc (- (* b b) (* 4 a c)))
+  (denom (* 2 a))) (list
+  (/ (+ (- b) (sqrt disc)) denom) (/ (- (- b) (sqrt disc)) denom))))
+****** if, cond
+- repl: (if #t 2 3)
+- repl: (if #f 2 3)
+- repl: 
+(define (abs x) 
+(cond ((< x 0) (- x))
+      ((> x 0) x)
+      (else 0)))
+****** Tests
+- repl: (require-extension test)
+- repl: (test 37 (+ 33 3))
+- repl: (test "Fred" "Barney")
+- repl: (test-assert #f)
+- repl: (test-error #f)
+- repl: (test-error (a b))
