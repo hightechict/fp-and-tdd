@@ -29,32 +29,32 @@
 - repl: (list 1 2 3)
 - repl: (quote (1 2 3))
 - repl '(1 2 3)
-****** Building lists from elements
+***** Building lists from elements
 - repl: (cons 1 (cons 2 (cons 3 '())))
 - repl: (cons 1 2)
-****** Deconstructing lists
+***** Deconstructing lists
 - repl: (car '(1 2 3))
 - repl: (cdr '(1 2 3))
-****** Definitions, Bindings
+**** Definitions, Bindings
 - repl: (define fred "Yabadabha doo")
 - repl: (fred)
 - repl: (list fred)
-****** Function definitions
+**** Function definitions
 - repl: (define (square x) (* x x))
 - repl: (square 2)
 - repl: (define (length x y) (sqrt (+ (square x) (square y))))
 - repl: (length 3 4)
-****** Anonymous functions, Lambda expressions
+**** Anonymous functions, Lambda expressions
 - repl: (lambda (x) (* x x))
 - repl: ((lambda (x) (* x x)) 2)
 - repl: (define square-it (lambda (x) (* x x)))
-****** Block structure
+**** Block structure
 - repl: (define (length x y) (define (square x) (* x x)) (sqrt (+
   (square x) (square y))))
 - repl: (define (root a b c) (let ((disc (- (* b b) (* 4 a c)))
   (denom (* 2 a))) (list
   (/ (+ (- b) (sqrt disc)) denom) (/ (- (- b) (sqrt disc)) denom))))
-****** if, cond
+**** if, cond
 - repl: (if #t 2 3)
 - repl: (if #f 2 3)
 - repl: 
@@ -62,10 +62,13 @@
 (cond ((< x 0) (- x))
       ((> x 0) x)
       (else 0)))
-****** Tests
+**** Tests
 - repl: (require-extension test)
 - repl: (test 37 (+ 33 3))
 - repl: (test "Fred" "Barney")
 - repl: (test-assert #f)
 - repl: (test-error #f)
 - repl: (test-error (a b))
+
+***** Running tests
+- prompt: csi -r5r-syntax -b -R test test.scm
