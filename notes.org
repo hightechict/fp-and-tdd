@@ -9,21 +9,23 @@
 #+EXPORT_EXCLUDE_TAGS: noexport
 #+STARTUP: context
 * Functional Programming and Test Driven Development
-** Intro Scheme
+** 0-5 Intro Scheme 
 *** Why Scheme?
 - purly functional
 - dynamically typed
 - almost no syntax, easy to explain
 - small
-
-** Scheme the language
+** 5-15 Scheme the language
 *** Scheme is a LISP dialect (LISt Processing)
-**** List is the central datastructure of the syntax and the language
+*** List is the central datastructure of the syntax and the language
 ***** Definition
 - '(' elem elem ')'
-- repl: (1 2 3)
-- the first element is interpreted as a procedure name, the rest of
-  the list are the arguments
+- repl:
+#+BEGIN_SRC scheme
+ (1 2 3)
+#+END_SRC
+- the first element is interpreted as a procedure name or syntactic
+  form, the rest of the list are the arguments
 - repl: (+ 1 2 3)
 ***** Creating lists
 - repl: (list 1 2 3)
@@ -35,40 +37,83 @@
 ***** Deconstructing lists
 - repl: (car '(1 2 3))
 - repl: (cdr '(1 2 3))
-**** Definitions, Bindings
-- repl: (define fred "Yabadabha doo")
-- repl: (fred)
-- repl: (list fred)
-**** Function definitions
-- repl: (define (square x) (* x x))
-- repl: (square 2)
-- repl: (define (length x y) (sqrt (+ (square x) (square y))))
-- repl: (length 3 4)
-**** Anonymous functions, Lambda expressions
+*** Creating functions, Lambda expressions
 - repl: (lambda (x) (* x x))
 - repl: ((lambda (x) (* x x)) 2)
+- repl: (lambda (x y) (+ x y) 26 11)
 - repl: (define square-it (lambda (x) (* x x)))
-**** Block structure
-- repl: (define (length x y) (define (square x) (* x x)) (sqrt (+
-  (square x) (square y))))
-- repl: (define (root a b c) (let ((disc (- (* b b) (* 4 a c)))
-  (denom (* 2 a))) (list
-  (/ (+ (- b) (sqrt disc)) denom) (/ (- (- b) (sqrt disc)) denom))))
-**** if, cond
+*** Definitions, Bindings
+- repl: (define fred "Yabadabha doo")
+- repl: (print fred)
+- repl: (list fred)
+*** Local bindings
+-repl: (let ((a 4) (b 3)) (* a b))
+-repl: (let ((a 4) (b (* a a))) (* a b))
+-repl: (letrec ((a 4) (b (* a a))) (* a b))
+-repl:
+#+BEGIN_SRC scheme
+  (define length 
+    (lambda (x y) 
+      (let ((square 
+             (lambda (x) (* x x)))) 
+        (sqrt (+ (square x) (square y))))))
+#+END_SRC
+- repl:
+#+BEGIN_SRC scheme
+  (define root 
+    (lambda (a b c) 
+      (let ((disc (- (* b b) (* 4 a c)))
+            (denom (* 2 a))) 
+        (list 
+         (/ (+ (- b) (sqrt disc)) denom) 
+         (/ (- (- b) (sqrt disc)) denom)))))
+#+END_SRC
+*** if, cond
 - repl: (if #t 2 3)
 - repl: (if #f 2 3)
 - repl: 
-(define (abs x) 
-(cond ((< x 0) (- x))
-      ((> x 0) x)
-      (else 0)))
-**** Tests
+#+BEGIN_SRC scheme
+  (define abs 
+    (lambda (x) 
+      (cond ((< x 0) (- x))
+            ((> x 0) x)
+            (else 0))))
+#+END_SRC scheme
+*** Tests
 - repl: (require-extension test)
 - repl: (test 37 (+ 33 3))
 - repl: (test "Fred" "Barney")
 - repl: (test-assert #f)
 - repl: (test-error #f)
 - repl: (test-error (a b))
-
+** 15-20 Test Driven Development
+*** Three rules of test driven development:
+1. You are not allowed to write any production code unless it is to
+   make a failing unit test pass.
+2. You are not allowed to write any more of a unit test than is
+   sufficient to fail; and compilation failures are failures.
+3. You are not allowed to write any more production code than is
+   sufficient to pass the one failing unit test.
+*** Setup for this workshop
+- for simplicity we will write the production and test code in the
+  same file
 ***** Running tests
-- prompt: csi -r5r-syntax -b -R test test.scm
+- prompt: run-tests
+- automatic prompt watchr tests.watchr
+- the test module is already loaded for you so no require statement is
+  needed
+
+** 20-35 Fizzbuzz
+*** 20-30 Simple fizzbuzz 
+For a given natural number greater zero return
+- "fizz" if the number is dividable by 3
+- "buzz" if the number is dividable by 5
+- "fizzbuzz" if the number is dividable by 3 and 5
+*** 30-35 Refactor the test code
+- Minimize repitition in the test code by extracting a method
+- Rewrite the test cases as a list and use the map function to 
+  apply your test function to each of the test cases.
+*** 35-40 Plenair show dried up test code
+- use of the let bindings
+- use of the exctract function
+- use of the apply function
