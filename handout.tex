@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper,draft,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{minted}
+\usepackage{hyperref}
+\author{Bas Bossink}
+\date{\today}
+\title{Functional Programming and Test Driven Development\\
+\vspace{2 mm} {\large A match made in heaven}}
+\newminted{scheme}{linenos=true,mathescape,xleftmargin=40px}
+\usepackage{natbib}  
+\bibliographystyle{chicago}
+\begin{document}
+
+\maketitle
+
+\section{Scheme the language}
+This section will briefly describe a small portion of the Scheme language that will be used in this workshop.
+\subsection{Lists}
+\subsubsection{Introduction}
+Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. A list is a denoted as a \texttt{'('} followed by elements seperated by spaces followed by an \texttt{')'}.
+
+\begin{listing}
+\label{firstlist}
+\begin{schemecode}
+(1 2 3) ; $\Rightarrow$ 
+	Error: call of non-procedure: 1
+
+	Call history:
+
+	<syntax>	  (1 2 3)
+	<eval>	  (1 2 3)	<--
+
+\end{schemecode}
+\caption{Example output of the evaluation of a list by a Scheme interperter}
+\end{listing}
+
+In the example output \ref{firstlist} you can see the way scheme interprets lists. The first element of the list is interpreted as a procedure if it is not one of the standard syntactic forms. This interpretation can be circumvented by \texttt{quote}-ing the expression using the \texttt{quote} syntactic form or it's abbreviated form \texttt{'}. An example of this is given below:
+\begin{listing}
+\label{quotedlist}
+\begin{schemecode}
+(quote (1 2 3)) ; $\Rightarrow$ (1 2 3)
+'(1 2 3) ; $\Rightarrow$ (1 2 3)
+(+ 1 2 3); $\Rightarrow$ 6
+\end{schemecode}
+\caption{Example output of the evaluation of a quoted list by a Scheme interperter}
+\end{listing}
+
+\subsubsection{Creating lists}
+Lists can be created in several different ways:
+\begin{itemize}
+\item List literals 
+\begin{schemecode}
+(quote (1 2 3)) ; $\Rightarrow$ (1 2 3)
+'(1 2 3) ; $\Rightarrow$ (1 2 3)
+\end{schemecode}
+\item Using the \texttt{list} procedure
+\begin{schemecode}
+(list 1 2 3) ; $\Rightarrow$ (1 2 3)
+\end{schemecode}
+\item Using the \texttt{cons} procedure to construct lists  
+\begin{schemecode}
+(cons 1 (cons 2 (cons 3 '()))) ; $\Rightarrow$ (1 2 3)
+\end{schemecode}
+The name cons stands for "contstruct". The \texttt{cons} procedure creates what is known as a cons cell, a pair of pointers. These pointer pairs can be used to create a single linked list where the second part of the pair points to the next element (= cons cell) in a list. The last cons cell of a list points to a distinguished value that is not a pair in our case the empty list \texttt{()}. 
+\end{itemize}
+\subsubsection{Deconstructing lists}
+Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. These names stem from the original Lisp implementation in the late 1950's. 
+\begin{itemize}
+\item \texttt{car} short for "Contents of the Address part of Register number" is referred to as \texttt{head} or \texttt{first} in some languages.
+\item \texttt{cdr} short for "Contents of the Decrement part of Register number" is referred to as \texttt{tail} or \texttt{rest} in some languages.
+\end{itemize} 
+\begin{schemecode}
+(car '(1 2 3)) ; $\Rightarrow$ 1
+(cdr '(1 2 3)) ; $\Rightarrow$ (2 3)
+\end{schemecode}
+\subsection{Procedures/Functions}
+\subsubsection{Creating procedures}
+Procedures can be created using the \texttt{lambda} syntactical form. Here lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} has the following information
+\begin{quotation}
+Lambda calculus (also written as $\lambda$-calculus) is a formal system in mathematical logic and computer science for expressing computation based on function abstraction and application using variable binding and substitution. First formulated by Alonzo Church to formalize the concept of effective computability, lambda calculus found early successes in the area of computability theory, such as a negative answer to Hilbert's Entscheidungsproblem.
+\end{quotation}
+\paragraph{Syntax}
+The basic syntax of a lambda expression looks like this:
+\begin{equation*}
+\texttt{(lamdba (par$_{0} \dots$ par$_{n}$) <body>)}
+\end{equation*}
+\paragraph{Examples}
+\begin{schemecode}
+(lambda (x) (* x x)) ; $\Rightarrow$ #<procedure (? x)>
+((lambda (x) (* x x)) 2) ; $\Rightarrow$ 4 
+((lambda (x y) (* x y)) 3 4) ; $\Rightarrow$ 12 
+\end{schemecode}
+\subsubsection{Applying procedures}
+We have already seen examples of applying a procedure to arguments above. There also is a handy function called \texttt{apply} that can be used to apply a procedure to it's arguments.
+\begin{schemecode}
+(apply (lambda (x y) (* x y)) '(3 4)) ; $\Rightarrow$ 12
+((lambda (x y) (* x y)) (car '(3 4)) (car (cdr '(3 4)))) ; $\Rightarrow$ 12
+\end{schemecode} 
+Using \texttt{apply} is sometimes handy because then you don't have to deconstruct the list as you can see in the example above.
+\subsection{Bindings a.k.a Definitions}
+\paragraph{Syntax}
+The create a top-level binding the \texttt{define} syntactic form is used which in it's most basic form looks like this:
+\begin{equation*}
+\texttt{(define <variable> <expression>)}
+\end{equation*}
+\paragraph{Examples}
+\begin{schemecode}
+(define square-it (lambda (x) (* x x)))
+(square-it 2) ; $\Rightarrow$ 4
+(define fred 37)
+(square-it fred) ; $\Rightarrow$ 1369
+\end{schemecode}
+\bibliography{handout} 
+\end{document}

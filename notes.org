@@ -7,7 +7,7 @@
 #+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
-#+STARTUP: context
+#+STARTUP: 
 * Functional Programming and Test Driven Development
 ** 0-5 Intro Scheme 
 *** Why Scheme?
@@ -17,7 +17,7 @@
 - small
 ** 5-15 Scheme the language
 *** Scheme is a LISP dialect (LISt Processing)
-*** List is the central datastructure of the syntax and the language
+*** The list is the central datastructure of the syntax and the language
 ***** Definition
 - '(' elem elem ')'
 - repl:
@@ -41,11 +41,11 @@
 - repl: (lambda (x) (* x x))
 - repl: ((lambda (x) (* x x)) 2)
 - repl: (lambda (x y) (+ x y) 26 11)
-- repl: (define square-it (lambda (x) (* x x)))
 *** Definitions, Bindings
-- repl: (define fred "Yabadabha doo")
-- repl: (print fred)
-- repl: (list fred)
+- repl: (define square-it (lambda (x) (* x x)))
+- repl: (square-it 2)
+- repl: (define fred 37)
+- repl: (square-it fred)
 *** Local bindings
 -repl: (let ((a 4) (b 3)) (* a b))
 -repl: (let ((a 4) (b (* a a))) (* a b))
@@ -103,17 +103,17 @@
 - the test module is already loaded for you so no require statement is
   needed
 
-** 20-35 Fizzbuzz
-*** 20-30 Simple fizzbuzz 
+** 20-50 Fizzbuzz
+*** 20-35 Simple fizzbuzz 
 For a given natural number greater zero return
 - "fizz" if the number is dividable by 3
 - "buzz" if the number is dividable by 5
 - "fizzbuzz" if the number is dividable by 3 and 5
-*** 30-35 Refactor the test code
+*** 35-45 Refactor the test code
 - Minimize repitition in the test code by extracting a method
 - Rewrite the test cases as a list and use the map function to 
   apply your test function to each of the test cases.
-*** 35-40 Plenair show dried up test code
+*** 45-50 Plenair show dried up test code
 - use of the let bindings
 - use of the exctract function
 - use of the apply function
