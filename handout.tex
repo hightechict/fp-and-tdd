@@ -1,24 +1,33 @@
-\documentclass[12pt,a4paper,draft,twoside]{article}
+\documentclass[12pt,a4paper,english,twoside]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{fancyhdr}
 \usepackage{lmodern}
 \usepackage{minted}
 \usepackage{hyperref}
-\author{Bas Bossink}
+\author{
+    Bas Bossink \texttt{bas.bossink@hightechict.nl}
+    \and
+    Bart de Boer \texttt{bart.de.boer@hightechict.nl}
+}
 \date{\today}
 \title{Functional Programming and Test Driven Development\\
 \vspace{2 mm} {\large A match made in heaven}}
 \newminted{scheme}{linenos=true,mathescape,xleftmargin=40px}
 \usepackage{natbib}  
 \bibliographystyle{chicago}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headheight}{35pt}
+\fancyhead[L]{\tiny Functional Programming and Test Driven Development}
+\fancyhead[R]{\includegraphics[scale=0.2]{HTLogo}}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
 \begin{document}
-
 \maketitle
-
 \section{Scheme the language}
 This section will briefly describe a small portion of the Scheme language that will be used in this workshop.
 \subsection{Lists}
@@ -29,12 +38,12 @@ Since Scheme is a LISP (LISt Processing) dialect the central syntactical element
 \label{firstlist}
 \begin{schemecode}
 (1 2 3) ; $\Rightarrow$ 
-	Error: call of non-procedure: 1
-
-	Call history:
-
-	<syntax>	  (1 2 3)
-	<eval>	  (1 2 3)	<--
+;;	Error: call of non-procedure: 1
+;;
+;;	Call history:
+;;
+;;	<syntax>	  (1 2 3)
+;;	<eval>	  (1 2 3)	<--
 
 \end{schemecode}
 \caption{Example output of the evaluation of a list by a Scheme interperter}
@@ -79,6 +88,59 @@ Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. T
 (car '(1 2 3)) ; $\Rightarrow$ 1
 (cdr '(1 2 3)) ; $\Rightarrow$ (2 3)
 \end{schemecode}
+\subsection{Other types of objects}
+\subsubsection{Boolean values}
+Scheme has the boolean values \texttt{\#f} and \texttt{\#t} for false and true 
+respectively. In boolean expressions all values except \texttt{\#f} are treated 
+as true.
+\subsubsection{Numbers}
+Scheme supports the following types of numbers
+\begin{itemize}
+\item integers with base 2, 8, 10, 16
+\begin{schemecode}
+#b100101; $\Rightarrow$ 37
+37 ; $\Rightarrow$ 37
+#o45 ; $\Rightarrow$ 37
+#x25 ; $\Rightarrow$ 37
+\end{schemecode}
+\item rationals
+\begin{schemecode}
+23/5 ; $\Rightarrow$ 23/5
+#x2/23 ; $\Rightarrow$ 2/35
+\end{schemecode}
+\item floating point values
+\begin{schemecode}
+1.3552e-12 ; $\Rightarrow$ 1.3552e-12 
+.2342 ; $\Rightarrow$ 0.2342
+\end{schemecode}
+\item complex numbers
+\begin{schemecode}
+1+37i ; $\Rightarrow$ 1+37i
+37@1.7 ; $\Rightarrow$ -4.76724628893441+36.6915979867413i
+\end{schemecode}
+\end{itemize}
+\subsubsection{Characters}
+\begin{schemecode}
+#\a ; $\Rightarrow$ #\a
+#\newline ; $\Rightarrow$ #\newline
+#\Z ; $\Rightarrow$ #\Z
+\end{schemecode}
+\subsubsection{Strings}
+\begin{schemecode}
+"Fred Flinstone" ; $\Rightarrow$ "Fred Flinstone"    
+"Barney Rubbles" ; $\Rightarrow$ "Barney Rubbles"
+\end{schemecode}
+\subsubsection{Symbols}
+A symbol is like an immutable string for which strings with the same content 
+will refer to the same object such that they can be easily compared with 
+\texttt{eq?} (essentially pointer comparison).
+\begin{schemecode}
+'Fred ; $\Rightarrow$ Fred
+(string->symbol "Fred Flinstone") ; $\Rightarrow$|Fred Flinstone|
+\end{schemecode}
+\subsubsection{Functions}
+In Scheme procedures or functions are first class values as well we'll look at 
+them in detail in the next section.
 \subsection{Procedures/Functions}
 \subsubsection{Creating procedures}
 Procedures can be created using the \texttt{lambda} syntactical form. Here lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} has the following information
@@ -100,10 +162,13 @@ The basic syntax of a lambda expression looks like this:
 We have already seen examples of applying a procedure to arguments above. There also is a handy function called \texttt{apply} that can be used to apply a procedure to it's arguments.
 \begin{schemecode}
 (apply (lambda (x y) (* x y)) '(3 4)) ; $\Rightarrow$ 12
-((lambda (x y) (* x y)) (car '(3 4)) (car (cdr '(3 4)))) ; $\Rightarrow$ 12
+((lambda (x y) 
+    (* x y)) 
+ (car '(3 4)) (car (cdr '(3 4)))) ; $\Rightarrow$ 12
 \end{schemecode} 
 Using \texttt{apply} is sometimes handy because then you don't have to deconstruct the list as you can see in the example above.
 \subsection{Bindings a.k.a Definitions}
+\subsubsection{Top-level Bindings}
 \paragraph{Syntax}
 The create a top-level binding the \texttt{define} syntactic form is used which in it's most basic form looks like this:
 \begin{equation*}
@@ -116,5 +181,48 @@ The create a top-level binding the \texttt{define} syntactic form is used which 
 (define fred 37)
 (square-it fred) ; $\Rightarrow$ 1369
 \end{schemecode}
+\subsubsection{Local Bindings}
+So far we have seen a way to define top level bindings, local bindings can be 
+introduced using the \texttt{let}, \texttt{let*} and \texttt{letrec} 
+syntactical forms each of them will be described below.
+\begin{equation*}
+\texttt{(let ((name$_{0}$ <expression$_{0}$>) $\dots$ (name$_{n}$ <expression$_{n}$>)) <body>)}
+\end{equation*}
+\begin{listing}
+\begin{schemecode}
+(let ((a 4) (b 3)) (* a b)) ; $\Rightarrow$ 12
+(let ((a 4) (b (* a a))) (* a b)) ; $\Rightarrow$
+;;Error: unbound variable: a
+;;
+;;	Call history:
+;;
+;;	<syntax>	  (let ((a 4) (b (* a a))) (* a b))
+;;	<syntax>	  (##core#let ((a 4) (b (* a a))) (* a b))
+;;	<syntax>	  (##core#begin (* a b))
+;;	<syntax>	  (* a b)
+;;	<syntax>	  (* a a)
+;;	<eval>	  (* a a)	<--
+(let* ((a 4) (b (* a 3))) (* a b)) ; $\Rightarrow$ 48
+(letrec (
+  (odd? (lambda (x) (if (= x 0) #f (even? (- x 1))))) 
+  (even? (lambda (x) (if (= x 0) #t (odd? (- x 1)))))) 
+    (odd? 37)) ; $\Rightarrow$ #t
+\end{schemecode}
+\end{listing}
+As you can see from the interpreter output in a \texttt{let} binding the 
+different bindings can not refer to each other. In a \texttt{let*} however the 
+bindings are evaluated from left to rigth and the previous bindings are in the 
+scope in the subsequent bindings. The \texttt{letrec} binding can be used to 
+define mutually recursive bindings as shown in the example above. The value 
+of a \texttt{let} binding is value of the last expression in the body. Of the above 
+syntactic forms a \texttt{let} also has a form called the named \texttt{let} 
+which lets you express iteration in a succinct manner
+\begin{schemecode}
+(let loop ((n 1))
+  (if (> n 10)
+    '()
+    (cons n (loop (+ n 1))))) ; $\Rightarrow$ (1 2 3 4 5 6 7 8 9 10)
+\end{schemecode}
+\subsection{Conditionals}
 \bibliography{handout} 
 \end{document}
