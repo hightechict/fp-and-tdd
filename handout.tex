@@ -12,6 +12,7 @@
 \usepackage{verbatim}
 \usepackage{alltt}
 \usepackage{color}
+\usepackage{listings}
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont{DejaVu Serif}
 \setsansfont{DejaVu Sans}
@@ -43,7 +44,7 @@
 This section will briefly describe a small portion of the Scheme language that will be used in this workshop.
 \subsection{Lists}
 \subsubsection{Introduction}
-Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. A list is a denoted as a \texttt{'('} followed by elements separated by spaces followed by an \texttt{')'}.
+Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. A list is a denoted as a \texttt{'('} followed by elements separated by spaces followed by a \texttt{')'}.
 \begin{schemecode}
 (1 2 3) ; $\Rightarrow$ 
 ;;	Error: call of non-procedure: 1
@@ -245,12 +246,12 @@ than the value of the if expression is undefined.
 \subsubsection{\texttt{cond}}
 Scheme also has a syntactic form, \texttt{cond} that can contain multiple 
 predicates:
-\begin{alltt}
-  (cond ((<predicate>\(_{0}\)) <expression>\(_{0}\)) 
-        \(\vdots\) 
-        ((<predicate\(_{n}\)) <expression>\(_{n}\)) 
-        [(else <expression\(_{n+1}\))])
-\end{alltt}
+\begin{lstlisting}[mathescape]
+  (cond ((<predicate>$_{0}$) <expression>$_{0}$) 
+        $\vdots$ 
+        ((<predicate$_{n}$) <expression>$_{n}$) 
+        [(else <expression$_{n+1}$)])
+\end{lstlisting}
 Each of the predicates gets evaluated in order of appearance the value of the 
 \texttt{cond} expression is the value of the expression of the first predicate 
 that evaluated to true. A \texttt{cond} expression can have an optional 
@@ -262,7 +263,7 @@ evaluated to true.
       ((< 37 42) "Barney")
       (else "Wilma")) ; $\Rightarrow$ "Barney"
 \end{schemecode}
-This concludes are discussion about a very limited but sufficient subset of 
+This concludes our discussion about a very limited but sufficient subset of 
 the Scheme programming languages, in the next section we will look at how to 
 write tests using the test library.
 \section{Testing Scheme code}
