@@ -1,6 +1,6 @@
 \documentclass[12pt,a4paper,english,twoside]{article}
-\usepackage[utf8]{inputenc}
-\usepackage{babel}
+\usepackage{fontspec}
+\usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -9,15 +9,26 @@
 \usepackage{lmodern}
 \usepackage{minted}
 \usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage{color}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\usepackage[cm]{fullpage}
+\setlength{\headsep}{10pt}
+\setlength{\footskip}{20pt}
+\addtolength{\textheight}{-30pt}
 \author{
-    Bas Bossink \texttt{bas.bossink@hightechict.nl}
-    \and
     Bart de Boer \texttt{bart.de.boer@hightechict.nl}
+    \and
+    Bas Bossink \texttt{bas.bossink@hightechict.nl}
 }
 \date{\today}
 \title{Functional Programming and Test Driven Development\\
 \vspace{2 mm} {\large A match made in heaven}}
-\newminted{scheme}{linenos=true,mathescape,xleftmargin=40px}
+\newminted{scheme}{linenos=true,mathescape,xleftmargin=20px}
 \usepackage{natbib}  
 \bibliographystyle{chicago}
 \renewcommand{\headrulewidth}{0.5pt}
@@ -32,10 +43,7 @@
 This section will briefly describe a small portion of the Scheme language that will be used in this workshop.
 \subsection{Lists}
 \subsubsection{Introduction}
-Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. A list is a denoted as a \texttt{'('} followed by elements seperated by spaces followed by an \texttt{')'}.
-
-\begin{listing}
-\label{firstlist}
+Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. A list is a denoted as a \texttt{'('} followed by elements separated by spaces followed by an \texttt{')'}.
 \begin{schemecode}
 (1 2 3) ; $\Rightarrow$ 
 ;;	Error: call of non-procedure: 1
@@ -46,19 +54,12 @@ Since Scheme is a LISP (LISt Processing) dialect the central syntactical element
 ;;	<eval>	  (1 2 3)	<--
 
 \end{schemecode}
-\caption{Example output of the evaluation of a list by a Scheme interperter}
-\end{listing}
-
-In the example output \ref{firstlist} you can see the way scheme interprets lists. The first element of the list is interpreted as a procedure if it is not one of the standard syntactic forms. This interpretation can be circumvented by \texttt{quote}-ing the expression using the \texttt{quote} syntactic form or it's abbreviated form \texttt{'}. An example of this is given below:
-\begin{listing}
-\label{quotedlist}
+Note that Scheme uses the \texttt{;} as the comment character. In the rest of the examples the result of evaluating a given expression will be preceded by a $\Rightarrow$. In the example output you can see the way scheme interprets lists. The first element of the list is interpreted as a procedure if it is not one of the standard syntactic forms. This interpretation can be circumvented by \texttt{quote}-ing the expression using the \texttt{quote} syntactic form or it's abbreviated form \texttt{'}. An example of this is given below:
 \begin{schemecode}
 (quote (1 2 3)) ; $\Rightarrow$ (1 2 3)
 '(1 2 3) ; $\Rightarrow$ (1 2 3)
 (+ 1 2 3); $\Rightarrow$ 6
 \end{schemecode}
-\caption{Example output of the evaluation of a quoted list by a Scheme interperter}
-\end{listing}
 
 \subsubsection{Creating lists}
 Lists can be created in several different ways:
@@ -76,7 +77,7 @@ Lists can be created in several different ways:
 \begin{schemecode}
 (cons 1 (cons 2 (cons 3 '()))) ; $\Rightarrow$ (1 2 3)
 \end{schemecode}
-The name cons stands for "contstruct". The \texttt{cons} procedure creates what is known as a cons cell, a pair of pointers. These pointer pairs can be used to create a single linked list where the second part of the pair points to the next element (= cons cell) in a list. The last cons cell of a list points to a distinguished value that is not a pair in our case the empty list \texttt{()}. 
+The name cons stands for "construct". The \texttt{cons} procedure creates what is known as a cons cell, a pair of pointers. These pointer pairs can be used to create a single linked list where the second part of the pair points to the next element (= cons cell) in a list. The last cons cell of a list points to a distinguished value that is not a pair in our case the empty list \texttt{()}. 
 \end{itemize}
 \subsubsection{Deconstructing lists}
 Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. These names stem from the original Lisp implementation in the late 1950's. 
@@ -211,7 +212,7 @@ syntactical forms each of them will be described below.
 \end{listing}
 As you can see from the interpreter output in a \texttt{let} binding the 
 different bindings can not refer to each other. In a \texttt{let*} however the 
-bindings are evaluated from left to rigth and the previous bindings are in the 
+bindings are evaluated from left to right and the previous bindings are in the 
 scope in the subsequent bindings. The \texttt{letrec} binding can be used to 
 define mutually recursive bindings as shown in the example above. The value 
 of a \texttt{let} binding is value of the last expression in the body. Of the above 
@@ -224,5 +225,115 @@ which lets you express iteration in a succinct manner
     (cons n (loop (+ n 1))))) ; $\Rightarrow$ (1 2 3 4 5 6 7 8 9 10)
 \end{schemecode}
 \subsection{Conditionals}
+\subsubsection{\texttt{if}}
+Scheme alse has a number of conditional expressions the simplest of which the 
+\texttt{if} form has the following syntax:
+\begin{equation*}
+    \texttt{(if <expression> <then expression> [<else expression>])}
+\end{equation*}
+The value of the if expression is the value of 
+the expression that gets evaluated depending on the value of the 
+\texttt{<expression>}, the else expression is optional. If the 
+\texttt{<expression>} evaluates to false and the else expression is missing 
+than the value of the if expression is undefined.
+\paragraph{Examples}
+\begin{schemecode}
+(if #t 37 42) ; $\Rightarrow$ 37
+(if #f 37 42) ; $\Rightarrow$ 42
+(if #f 37) ; evaluates to `nothing` in Chicken Scheme
+\end{schemecode}
+\subsubsection{\texttt{cond}}
+Scheme also has a syntactic form, \texttt{cond} that can contain multiple 
+predicates:
+\begin{alltt}
+  (cond ((<predicate>\(_{0}\)) <expression>\(_{0}\)) 
+        \(\vdots\) 
+        ((<predicate\(_{n}\)) <expression>\(_{n}\)) 
+        [(else <expression\(_{n+1}\))])
+\end{alltt}
+Each of the predicates gets evaluated in order of appearance the value of the 
+\texttt{cond} expression is the value of the expression of the first predicate 
+that evaluated to true. A \texttt{cond} expression can have an optional 
+\texttt{else} clause that will be evaluated if none of the predicates 
+evaluated to true.
+\paragraph{Examples}
+\begin{schemecode}
+(cond ((= 37 42) "Fred")
+      ((< 37 42) "Barney")
+      (else "Wilma")) ; $\Rightarrow$ "Barney"
+\end{schemecode}
+This concludes are discussion about a very limited but sufficient subset of 
+the Scheme programming languages, in the next section we will look at how to 
+write tests using the test library.
+\section{Testing Scheme code}
+\subsection{Writing tests}
+The environment we will use already loads the test library by default so all 
+we need to look at here is the syntax for writing tests. The test library 
+has several functions that can be used to write assertions let's look at some 
+examples:
+\begin{schemecode}
+(test 37  (+ 33 3)) ; $\Rightarrow$ 
+;; (+ 33 3) ......................................... [ ${\color{red}\texttt{FAIL}}$]
+;;    expected 37 but got 36
+;;FAIL
+(test "A test with a nice description" 37 (- 42 4)) ; $\Rightarrow$
+;; A test with a nice description ................... [ ${\color{red}\texttt{FAIL}}$]
+;;    expected 37 but got 38
+;;    (- 42 4)
+;;FAIL
+(test-assert #f) ; $\Rightarrow$
+;; .................................................. [ ${\color{red}\texttt{FAIL}}$]
+;;    assertion failed
+;;FAIL
+(test-assert #t) ; $\Rightarrow$
+;;#t ................................................ [ ${\color{green}\texttt{PASS}}$]
+;;PASS
+(test-error "should result in an error" #f) ; $\Rightarrow$
+;;should result in an error ......................... [ ${\color{red}\texttt{FAIL}}$]
+;;    expected an error but got #f
+;;FAIL
+(test-error (1 2)) ; $\Rightarrow$
+;;(1 2) ............................................. [ ${\color{green}\texttt{PASS}}$]
+;;PASS
+\end{schemecode}
+\subsection{Running tests}
+To make running tests easy during this workshop we will be using a 
+\texttt{watchr} script that will automatically run our tests when they are 
+saved. To start watching the home directory of the fp user for changes, open a 
+terminal window clicking on the desktop and selecting Terminal from the menu. 
+At the prompt type the following command:
+\begin{alltt}
+> begin-watching-tests
+\end{alltt}
+\section{DRY-ing up test code using higher order functions}
+During this excercise we will remove some duplication (DRY= Don't Repeat 
+Yourself) from test code using higher order functions (functions that take 
+other functions as parameters or return funtions as their result). Some code 
+for this exercise has been prepared for you in the \texttt{fizzbuzz.scm} file. 
+Start by opening it using any of the available editors from the menu. This 
+file contains some production and test code that implements the basic fizzbuzz 
+kata. The assignment was to create a fizzbuzz function that takes an integer 
+and returns `fizz` if the integer is divisible by 3, `buzz` if it is divisible 
+by 5, `fizzbuzz` if it is divisible by both 3 and 5 and the integer given as 
+input otherwise.
+\subsection{Extract `method`}
+Remove some of the duplication by extracting a function that takes as 
+parameters the input integer and the expected output. This function should 
+invoke the test method such that calling this new function executes a 
+single test case.
+\subsection{Reduce duplication further using \texttt{map}}
+Now we will remove even more duplication by using the \texttt{map} and 
+\texttt{apply} functions. We saw the \texttt{apply} function in the 
+introduction it takes a function and a list as arguments and applies the 
+supplied function to the supplied arguments in the list. The \texttt{map} 
+function takes a function and a list as at parameters and returns a new list 
+consisting of the function applied to each of the elements in the list.
+Here is a short example
+\begin{schemecode}
+(map (lambda (x) (* x x)) '(1 2 3)) ; $\Rightarrow$ (1 4 9)
+\end{schemecode}
+The assignment is to use the \texttt{map} and \texttt{apply} functions to 
+rewrite the tests as an applycition of \texttt{map} on a list of test cases.
+You should use a \texttt{let} binding to avoid poluting the global namespace.
 \bibliography{handout} 
 \end{document}
