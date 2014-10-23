@@ -1,16 +1,18 @@
 (load "check.scm")
 
-(define unary-operator? (lambda (expression)
-  (eqv? 'sqrt (car expression))))
+(define unary-operator? 
+  (lambda (expression)
+    (eqv? 'sqrt (car expression))))
 
-(define operator? (lambda (expression)
-  (let ((token (car expression)))
-    (or (eqv? '+ token)
-        (eqv? '- token)
-        (eqv? '* token)
-        (eqv? '^ token)
-        (unary-operator? expression)
-        (eqv? '/ token)))))
+(define operator? 
+  (lambda (expression)
+    (let ((token (car expression)))
+      (or (eqv? '+ token)
+          (eqv? '- token)
+          (eqv? '* token)
+          (eqv? '^ token)
+          (unary-operator? expression)
+          (eqv? '/ token)))))
 
 (define operator 
   (lambda (expression) 
@@ -23,23 +25,21 @@
     (lambda (expression . operands)
       (eval (cons (operator expression) operands))))
 
-  (define calculate (lambda (exp stack)
-    (if (null? expression)
+  (define calculate 
+    (lambda (exp stack)
+      (if (null? expression)
         "there is nothing to calculate!"
-          (cond ((null? exp) (car stack))
-                ((unary-operator? exp)
-                 (let* ((first-operand (car stack))
-                        (result (evaluate exp first-operand)))
-                   (calculate (cdr exp) (cons result (cdr stack)))))
-                ((operator? exp)
-                 (let* ((first-operand (cadr stack))
-                        (second-operand (car stack))
-                        (result (evaluate
-                                  exp
-                                  first-operand 
-                                  second-operand)))
-                   (calculate (cdr exp) (cons result (cddr stack)))))
-                (else (calculate (cdr exp) (cons (car exp) stack)))))))
+        (cond ((null? exp) (car stack))
+              ((unary-operator? exp)
+               (let* ((first-operand (car stack))
+                      (result (evaluate exp first-operand)))
+                 (calculate (cdr exp) (cons result (cdr stack)))))
+              ((operator? exp)
+               (let* ((first-operand (cadr stack))
+                      (second-operand (car stack))
+                      (result (evaluate exp first-operand second-operand)))
+                 (calculate (cdr exp) (cons result (cddr stack)))))
+              (else (calculate (cdr exp) (cons (car exp) stack)))))))
   (calculate expression '()))
 
 (check (operator? '(+)) => #t)
