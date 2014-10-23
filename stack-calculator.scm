@@ -19,21 +19,25 @@
             (else oper)))))
 
 (define (rpn expression)
-  
+  (define evaluate 
+    (lambda (operator . operands)
+      (eval (cons operator operands))))
+
   (define calculate (lambda (exp stack)
     (if (null? expression)
         "there is nothing to calculate!"
           (cond ((null? exp) (car stack))
                 ((unary-operator? exp)
                  (let* ((first-operand (car stack))
-                        (result (eval (list (operator exp)
-                                            first-operand))))
+                        (result (evaluate (operator exp) first-operand)))
                    (calculate (cdr exp) (cons result (cdr stack)))))
                 ((operator? exp)
                  (let* ((first-operand (cadr stack))
                         (second-operand (car stack))
-                        (result (eval (list (operator exp)
-                                            first-operand second-operand))))
+                        (result (evaluate
+                                  (operator exp)
+                                  first-operand 
+                                  second-operand)))
                    (calculate (cdr exp) (cons result (cddr stack)))))
                 (else (calculate (cdr exp) (cons (car exp) stack)))))))
   (calculate expression '()))
