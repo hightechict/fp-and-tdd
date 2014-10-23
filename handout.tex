@@ -13,6 +13,7 @@
 \usepackage{alltt}
 \usepackage{color}
 \usepackage{listings}
+\lstset{frame=single,keepspaces=true,numbers=none,tabsize=2}
 \defaultfontfeatures{Ligatures=TeX}
 \setmainfont{DejaVu Serif}
 \setsansfont{DejaVu Sans}
@@ -42,42 +43,129 @@
 \maketitle
 \section{Scheme the language}
 This section will briefly describe a small portion of the Scheme language that will be used in this workshop.
-\subsection{Lists}
-\subsubsection{Introduction}
-Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. A list is a denoted as a \texttt{'('} followed by elements separated by spaces followed by a \texttt{')'}.
-\begin{schemecode}
-(1 2 3) ; $\Rightarrow$ 
-;;	Error: call of non-procedure: 1
-;;
-;;	Call history:
-;;
-;;	<syntax>	  (1 2 3)
-;;	<eval>	  (1 2 3)	<--
+Before we start a few typographical conventions all text written in a 
+\texttt{monospaced font} is either a Scheme keyword or text provided or 
+returned from the Scheme interpreters REPL (Read Eval Print Loop), a console 
+application that evaluates Scheme expressions as you provide them. The prompt 
+of the REPL starts with \texttt{\#;<successfully-evaluated-expression-number>$\texttt{>}$}.
+\subsection{Introduction}
+Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. But before we dive into lists lets look at Scheme's 'primitive' expressions, that is expression that evaluatet to themselves. In Scheme these are: booleans, numbers, characters, strings and vectors.
+\subsection{Boolean values}
+Scheme has the boolean values \texttt{\#f} and \texttt{\#t} for false and true 
+respectively. In boolean expressions all values except \texttt{\#f} are treated 
+as true.
+\subsection{Numbers}
+Scheme supports the following types of numbers
+\begin{itemize}
+\item integers with base 2, 8, 10, 16
+\begin{lstlisting}
+#;5>#b100101
+37
+#;6>37
+37
+#;7>#o45
+37
+#;8>#x25
+37
+\end{lstlisting}
+\item rationals
+\begin{lstlisting}
+#;9>23/5
+23/5
+#;10>#x2/23 
+2/35
+\end{lstlisting}
+\item floating point values
+\begin{lstlisting}
+#;11>1.3552e-12
+1.3552e-12 
+#;12>.2342
+0.2342
+\end{lstlisting}
+\item complex numbers
+\begin{lstlisting}
+#;13>1+37i
+1+37i
+#;14>37@1.7
+-4.76724628893441+36.6915979867413i
+\end{lstlisting}
+\end{itemize}
+\subsubsection{Characters}
+The syntax for writing characters is somewhat different than most other 
+programming languages. Character literals are preceded by the 
+\texttt{\#\textbackslash} 
+characters.
+\begin{lstlisting}
+#;15>#\a
+#\a
+#;16>#\newline
+#\newline
+#;17>#\Z
+#\Z
+\end{lstlisting}
+\subsubsection{Strings}
+\begin{lstlisting}
+#;18>"Fred Flinstone"
+"Fred Flinstone"    
+#;19>"Barney Rubbles"
+"Barney Rubbles"
+\end{lstlisting}
+\subsection{Symbols}
+A symbol is like an immutable string for which strings with the same content 
+will refer to the same object such that they can be easily compared with 
+\texttt{eq?} (essentially pointer comparison).
+\begin{lstlisting}
+#;20>'Fred
+Fred
+#;21>(string->symbol "Fred Flinstone")
+|Fred Flinstone|
+\end{lstlisting}
+\subsection{Other types of objects}
+\subsubsection{Lists}
+A list is a denoted as a \texttt{'('} followed by elements separated by spaces followed by a \texttt{')'}.
+\begin{lstlisting}
+#;22>(1 2 3)
+Error: call of non-procedure: 1
 
-\end{schemecode}
-Note that Scheme uses the \texttt{;} as the comment character. In the rest of the examples the result of evaluating a given expression will be preceded by a $\Rightarrow$. In the example output you can see the way scheme interprets lists. The first element of the list is interpreted as a procedure if it is not one of the standard syntactic forms. This interpretation can be circumvented by \texttt{quote}-ing the expression using the \texttt{quote} syntactic form or it's abbreviated form \texttt{'}. An example of this is given below:
-\begin{schemecode}
-(quote (1 2 3)) ; $\Rightarrow$ (1 2 3)
-'(1 2 3) ; $\Rightarrow$ (1 2 3)
-(+ 1 2 3); $\Rightarrow$ 6
-\end{schemecode}
+Call history:
 
+<syntax>	  (1 2 3)
+<eval>	  (1 2 3)	<--
+
+\end{lstlisting}
+Note that Scheme uses the \texttt{;} as the comment character. In the example output you can see the way scheme interprets lists. The first element of the list is interpreted as a procedure if it is not one of the standard syntactic forms. This interpretation can be circumvented by \texttt{quote}-ing the expression using the \texttt{quote} syntactic form or it's abbreviated form \texttt{'}. An example of this is given below:
+\begin{lstlisting}
+#;22>(quote (1 2 3))
+(1 2 3)
+\end{lstlisting}
+\begin{lstlisting}
+#;23>'(1 2 3)
+(1 2 3)
+\end{lstlisting}
+\begin{lstlisting}
+#;24>(+ 1 2 3)
+6
+\end{lstlisting}
 \subsubsection{Creating lists}
 Lists can be created in several different ways:
 \begin{itemize}
 \item List literals 
-\begin{schemecode}
-(quote (1 2 3)) ; $\Rightarrow$ (1 2 3)
-'(1 2 3) ; $\Rightarrow$ (1 2 3)
-\end{schemecode}
+\begin{lstlisting}
+#;25>(quote (1 2 3))
+(1 2 3)
+#;26>'(1 2 3)
+(1 2 3)
+\end{lstlisting}
 \item Using the \texttt{list} procedure
-\begin{schemecode}
-(list 1 2 3) ; $\Rightarrow$ (1 2 3)
-\end{schemecode}
+\begin{lstlisting}
+#;27>(list 1 2 3)
+(1 2 3)
+\end{lstlisting}
 \item Using the \texttt{cons} procedure to construct lists  
-\begin{schemecode}
-(cons 1 (cons 2 (cons 3 '()))) ; $\Rightarrow$ (1 2 3)
-\end{schemecode}
+\begin{lstlisting}
+#;28>(cons 1 (cons 2 (cons 3 '())))
+(1 2 3)
+\end{lstlisting}
 The name cons stands for "construct". The \texttt{cons} procedure creates what is known as a cons cell, a pair of pointers. These pointer pairs can be used to create a single linked list where the second part of the pair points to the next element (= cons cell) in a list. The last cons cell of a list points to a distinguished value that is not a pair in our case the empty list \texttt{()}. 
 \end{itemize}
 \subsubsection{Deconstructing lists}
@@ -86,89 +174,12 @@ Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. T
 \item \texttt{car} short for "Contents of the Address part of Register number" is referred to as \texttt{head} or \texttt{first} in some languages.
 \item \texttt{cdr} short for "Contents of the Decrement part of Register number" is referred to as \texttt{tail} or \texttt{rest} in some languages.
 \end{itemize} 
-\begin{schemecode}
-(car '(1 2 3)) ; $\Rightarrow$ 1
-(cdr '(1 2 3)) ; $\Rightarrow$ (2 3)
-\end{schemecode}
-\subsection{Other types of objects}
-\subsubsection{Boolean values}
-Scheme has the boolean values \texttt{\#f} and \texttt{\#t} for false and true 
-respectively. In boolean expressions all values except \texttt{\#f} are treated 
-as true.
-\subsubsection{Numbers}
-Scheme supports the following types of numbers
-\begin{itemize}
-\item integers with base 2, 8, 10, 16
-\begin{schemecode}
-#b100101; $\Rightarrow$ 37
-37 ; $\Rightarrow$ 37
-#o45 ; $\Rightarrow$ 37
-#x25 ; $\Rightarrow$ 37
-\end{schemecode}
-\item rationals
-\begin{schemecode}
-23/5 ; $\Rightarrow$ 23/5
-#x2/23 ; $\Rightarrow$ 2/35
-\end{schemecode}
-\item floating point values
-\begin{schemecode}
-1.3552e-12 ; $\Rightarrow$ 1.3552e-12 
-.2342 ; $\Rightarrow$ 0.2342
-\end{schemecode}
-\item complex numbers
-\begin{schemecode}
-1+37i ; $\Rightarrow$ 1+37i
-37@1.7 ; $\Rightarrow$ -4.76724628893441+36.6915979867413i
-\end{schemecode}
-\end{itemize}
-\subsubsection{Characters}
-\begin{schemecode}
-#\a ; $\Rightarrow$ #\a
-#\newline ; $\Rightarrow$ #\newline
-#\Z ; $\Rightarrow$ #\Z
-\end{schemecode}
-\subsubsection{Strings}
-\begin{schemecode}
-"Fred Flinstone" ; $\Rightarrow$ "Fred Flinstone"    
-"Barney Rubbles" ; $\Rightarrow$ "Barney Rubbles"
-\end{schemecode}
-\subsubsection{Symbols}
-A symbol is like an immutable string for which strings with the same content 
-will refer to the same object such that they can be easily compared with 
-\texttt{eq?} (essentially pointer comparison).
-\begin{schemecode}
-'Fred ; $\Rightarrow$ Fred
-(string->symbol "Fred Flinstone") ; $\Rightarrow$|Fred Flinstone|
-\end{schemecode}
-\subsubsection{Functions}
-In Scheme procedures or functions are first class values as well we'll look at 
-them in detail in the next section.
-\subsection{Procedures/Functions}
-\subsubsection{Creating procedures}
-Procedures can be created using the \texttt{lambda} syntactical form. Here lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} has the following information
-\begin{quotation}
-Lambda calculus (also written as $\lambda$-calculus) is a formal system in mathematical logic and computer science for expressing computation based on function abstraction and application using variable binding and substitution. First formulated by Alonzo Church to formalize the concept of effective computability, lambda calculus found early successes in the area of computability theory, such as a negative answer to Hilbert's Entscheidungsproblem.
-\end{quotation}
-\paragraph{Syntax}
-The basic syntax of a lambda expression looks like this:
-\begin{equation*}
-\texttt{(lamdba (par$_{0} \dots$ par$_{n}$) <body>)}
-\end{equation*}
-\paragraph{Examples}
-\begin{schemecode}
-(lambda (x) (* x x)) ; $\Rightarrow$ #<procedure (? x)>
-((lambda (x) (* x x)) 2) ; $\Rightarrow$ 4 
-((lambda (x y) (* x y)) 3 4) ; $\Rightarrow$ 12 
-\end{schemecode}
-\subsubsection{Applying procedures}
-We have already seen examples of applying a procedure to arguments above. There also is a handy function called \texttt{apply} that can be used to apply a procedure to it's arguments.
-\begin{schemecode}
-(apply (lambda (x y) (* x y)) '(3 4)) ; $\Rightarrow$ 12
-((lambda (x y) 
-    (* x y)) 
- (car '(3 4)) (car (cdr '(3 4)))) ; $\Rightarrow$ 12
-\end{schemecode} 
-Using \texttt{apply} is sometimes handy because then you don't have to deconstruct the list as you can see in the example above.
+\begin{lstlisting}
+#;29>(car '(1 2 3))
+1
+#;30>(cdr '(1 2 3))
+(2 3)
+\end{lstlisting}
 \subsection{Bindings a.k.a Definitions}
 \subsubsection{Top-level Bindings}
 \paragraph{Syntax}
@@ -177,12 +188,14 @@ The create a top-level binding the \texttt{define} syntactic form is used which 
 \texttt{(define <variable> <expression>)}
 \end{equation*}
 \paragraph{Examples}
-\begin{schemecode}
-(define square-it (lambda (x) (* x x)))
-(square-it 2) ; $\Rightarrow$ 4
-(define fred 37)
-(square-it fred) ; $\Rightarrow$ 1369
-\end{schemecode}
+\begin{lstlisting}
+#;31>(define fred 37)
+#;32>fred
+37
+#;33>(define barney "Betty")
+#;34>barney
+"Betty"
+\end{lstlisting}
 \subsubsection{Local Bindings}
 So far we have seen a way to define top level bindings, local bindings can be 
 introduced using the \texttt{let}, \texttt{let*} and \texttt{letrec} 
@@ -191,8 +204,9 @@ syntactical forms each of them will be described below.
 \texttt{(let ((name$_{0}$ <expression$_{0}$>) $\dots$ (name$_{n}$ <expression$_{n}$>)) <body>)}
 \end{equation*}
 \begin{listing}
-\begin{schemecode}
-(let ((a 4) (b 3)) (* a b)) ; $\Rightarrow$ 12
+\begin{lstlisting}
+#;35>(let ((a 4) (b 3)) (* a b))
+12
 (let ((a 4) (b (* a a))) (* a b)) ; $\Rightarrow$
 ;;Error: unbound variable: a
 ;;
@@ -209,7 +223,7 @@ syntactical forms each of them will be described below.
   (odd? (lambda (x) (if (= x 0) #f (even? (- x 1))))) 
   (even? (lambda (x) (if (= x 0) #t (odd? (- x 1)))))) 
     (odd? 37)) ; $\Rightarrow$ #t
-\end{schemecode}
+\end{lstlisting}
 \end{listing}
 As you can see from the interpreter output in a \texttt{let} binding the 
 different bindings can not refer to each other. In a \texttt{let*} however the 
@@ -219,12 +233,41 @@ define mutually recursive bindings as shown in the example above. The value
 of a \texttt{let} binding is value of the last expression in the body. Of the above 
 syntactic forms a \texttt{let} also has a form called the named \texttt{let} 
 which lets you express iteration in a succinct manner
-\begin{schemecode}
+\begin{lstlisting}
 (let loop ((n 1))
   (if (> n 10)
     '()
     (cons n (loop (+ n 1))))) ; $\Rightarrow$ (1 2 3 4 5 6 7 8 9 10)
-\end{schemecode}
+\end{lstlisting}
+\subsubsection{Functions}
+In Scheme procedures or functions are first class values as well we'll look at 
+them in detail in the next section.
+\subsection{Procedures/Functions}
+\subsubsection{Creating procedures}
+Procedures can be created using the \texttt{lambda} syntactical form. Here lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} has the following information
+\begin{quotation}
+Lambda calculus (also written as $\lambda$-calculus) is a formal system in mathematical logic and computer science for expressing computation based on function abstraction and application using variable binding and substitution. First formulated by Alonzo Church to formalize the concept of effective computability, lambda calculus found early successes in the area of computability theory, such as a negative answer to Hilbert's Entscheidungsproblem.
+\end{quotation}
+\paragraph{Syntax}
+The basic syntax of a lambda expression looks like this:
+\begin{equation*}
+\texttt{(lamdba (par$_{0} \dots$ par$_{n}$) <body>)}
+\end{equation*}
+\paragraph{Examples}
+\begin{lstlisting}
+(lambda (x) (* x x)) ; $\Rightarrow$ #<procedure (? x)>
+((lambda (x) (* x x)) 2) ; $\Rightarrow$ 4 
+((lambda (x y) (* x y)) 3 4) ; $\Rightarrow$ 12 
+\end{lstlisting}
+\subsubsection{Applying procedures}
+We have already seen examples of applying a procedure to arguments above. There also is a handy function called \texttt{apply} that can be used to apply a procedure to it's arguments.
+\begin{lstlisting}
+(apply (lambda (x y) (* x y)) '(3 4)) ; $\Rightarrow$ 12
+((lambda (x y) 
+    (* x y)) 
+ (car '(3 4)) (car (cdr '(3 4)))) ; $\Rightarrow$ 12
+\end{lstlisting} 
+Using \texttt{apply} is sometimes handy because then you don't have to deconstruct the list as you can see in the example above.
 \subsection{Conditionals}
 \subsubsection{\texttt{if}}
 Scheme alse has a number of conditional expressions the simplest of which the 
@@ -238,11 +281,11 @@ the expression that gets evaluated depending on the value of the
 \texttt{<expression>} evaluates to false and the else expression is missing 
 than the value of the if expression is undefined.
 \paragraph{Examples}
-\begin{schemecode}
+\begin{lstlisting}
 (if #t 37 42) ; $\Rightarrow$ 37
 (if #f 37 42) ; $\Rightarrow$ 42
 (if #f 37) ; evaluates to `nothing` in Chicken Scheme
-\end{schemecode}
+\end{lstlisting}
 \subsubsection{\texttt{cond}}
 Scheme also has a syntactic form, \texttt{cond} that can contain multiple 
 predicates:
@@ -258,11 +301,11 @@ that evaluated to true. A \texttt{cond} expression can have an optional
 \texttt{else} clause that will be evaluated if none of the predicates 
 evaluated to true.
 \paragraph{Examples}
-\begin{schemecode}
+\begin{lstlisting}
 (cond ((= 37 42) "Fred")
       ((< 37 42) "Barney")
       (else "Wilma")) ; $\Rightarrow$ "Barney"
-\end{schemecode}
+\end{lstlisting}
 This concludes our discussion about a very limited but sufficient subset of 
 the Scheme programming languages, in the next section we will look at how to 
 write tests using the test library.
@@ -272,7 +315,7 @@ The environment we will use already loads the test library by default so all
 we need to look at here is the syntax for writing tests. The test library 
 has several functions that can be used to write assertions let's look at some 
 examples:
-\begin{schemecode}
+\begin{lstlisting}
 (test 37  (+ 33 3)) ; $\Rightarrow$ 
 ;; (+ 33 3) ......................................... [ ${\color{red}\texttt{FAIL}}$]
 ;;    expected 37 but got 36
@@ -296,7 +339,7 @@ examples:
 (test-error (1 2)) ; $\Rightarrow$
 ;;(1 2) ............................................. [ ${\color{green}\texttt{PASS}}$]
 ;;PASS
-\end{schemecode}
+\end{lstlisting}
 \subsection{Running tests}
 To make running tests easy during this workshop we will be using a 
 \texttt{watchr} script that will automatically run our tests when they are 
@@ -330,9 +373,9 @@ supplied function to the supplied arguments in the list. The \texttt{map}
 function takes a function and a list as at parameters and returns a new list 
 consisting of the function applied to each of the elements in the list.
 Here is a short example
-\begin{schemecode}
+\begin{lstlisting}
 (map (lambda (x) (* x x)) '(1 2 3)) ; $\Rightarrow$ (1 4 9)
-\end{schemecode}
+\end{lstlisting}
 The assignment is to use the \texttt{map} and \texttt{apply} functions to 
 rewrite the tests as an applycition of \texttt{map} on a list of test cases.
 You should use a \texttt{let} binding to avoid poluting the global namespace.
