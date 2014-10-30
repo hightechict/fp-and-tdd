@@ -31,8 +31,7 @@
 \title{Functional Programming and Test Driven Development\\
 \vspace{2 mm} {\large A match made in heaven}}
 \newminted{scheme}{linenos=true,mathescape,xleftmargin=20px}
-\usepackage{natbib}  
-\bibliographystyle{chicago}
+\usepackage{natbib}  \bibliographystyle{chicago}
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\headheight}{35pt}
 \fancyhead[L]{\tiny Functional Programming and Test Driven Development}
@@ -42,18 +41,25 @@
 \begin{document}
 \maketitle
 \section{Scheme the language}
-This section will briefly describe a small portion of the Scheme language that will be used in this workshop.
+This section will briefly describe a small portion of the Scheme language that 
+will be used in this workshop.
 Before we start a few typographical conventions all text written in a 
 \texttt{monospaced font} is either a Scheme keyword or text provided or 
 returned from the Scheme interpreters REPL (Read Eval Print Loop), a console 
 application that evaluates Scheme expressions as you provide them. The prompt 
-of the REPL starts with \texttt{\#;<successfully-evaluated-expression-number>$\texttt{>}$}.
+of the REPL starts with 
+\texttt{\#;<successfully-evaluated-expression-number>$\texttt{>}$}. Note that 
+Scheme uses the \texttt{;} as the comment character.  
 \subsection{Introduction}
-Since Scheme is a LISP (LISt Processing) dialect the central syntactical element in the language is the list. But before we dive into lists lets look at Scheme's 'primitive' expressions, that is expression that evaluatet to themselves. In Scheme these are: booleans, numbers, characters, strings and vectors.
+Since Scheme is a LISP (LISt Processing) dialect the central syntactical 
+element in the language is the list. But before we dive into lists lets look 
+at Scheme's 'primitive' expressions, that is expression that evaluate to 
+themselves. In Scheme these are: booleans, numbers, characters, strings, 
+symbols and vectors.
 \subsection{Boolean values}
 Scheme has the boolean values \texttt{\#f} and \texttt{\#t} for false and true 
-respectively. In boolean expressions all values except \texttt{\#f} are treated 
-as true.
+respectively. In boolean expressions all values except \texttt{\#f} are 
+treated as true.
 \subsection{Numbers}
 Scheme supports the following types of numbers
 \begin{itemize}
@@ -61,9 +67,9 @@ Scheme supports the following types of numbers
 \begin{lstlisting}
 #;5>#b100101
 37
-#;6>37
+#;6>#o45
 37
-#;7>#o45
+#;7>37
 37
 #;8>#x25
 37
@@ -72,8 +78,8 @@ Scheme supports the following types of numbers
 \begin{lstlisting}
 #;9>23/5
 23/5
-#;10>#x2/23 
-2/35
+#;10>#x20/1a
+16/10
 \end{lstlisting}
 \item floating point values
 \begin{lstlisting}
@@ -90,11 +96,10 @@ Scheme supports the following types of numbers
 -4.76724628893441+36.6915979867413i
 \end{lstlisting}
 \end{itemize}
-\subsubsection{Characters}
+\subsection{Characters}
 The syntax for writing characters is somewhat different than most other 
 programming languages. Character literals are preceded by the 
-\texttt{\#\textbackslash} 
-characters.
+\texttt{\#\textbackslash} characters.
 \begin{lstlisting}
 #;15>#\a
 #\a
@@ -103,7 +108,8 @@ characters.
 #;17>#\Z
 #\Z
 \end{lstlisting}
-\subsubsection{Strings}
+\subsection{Strings}
+Strings are written as a number of characters surrounded by double-quotes.
 \begin{lstlisting}
 #;18>"Fred Flinstone"
 "Fred Flinstone"    
@@ -122,7 +128,8 @@ Fred
 \end{lstlisting}
 \subsection{Other types of objects}
 \subsubsection{Lists}
-A list is a denoted as a \texttt{'('} followed by elements separated by spaces followed by a \texttt{')'}.
+A list is denoted as a \texttt{'('} followed by elements separated by spaces 
+followed by a \texttt{')'}.
 \begin{lstlisting}
 #;22>(1 2 3)
 Error: call of non-procedure: 1
@@ -133,7 +140,11 @@ Call history:
 <eval>	  (1 2 3)	<--
 
 \end{lstlisting}
-Note that Scheme uses the \texttt{;} as the comment character. In the example output you can see the way scheme interprets lists. The first element of the list is interpreted as a procedure if it is not one of the standard syntactic forms. This interpretation can be circumvented by \texttt{quote}-ing the expression using the \texttt{quote} syntactic form or it's abbreviated form \texttt{'}. An example of this is given below:
+In the example output you can see the way Scheme interprets lists. The first 
+element of the list is interpreted as a procedure if it is not one of the 
+standard syntactic forms. This interpretation can be circumvented by 
+\texttt{quote}-ing the expression using the \texttt{quote} syntactic form or 
+it's abbreviated form \texttt{'}. An example of this is given below:
 \begin{lstlisting}
 #;22>(quote (1 2 3))
 (1 2 3)
@@ -146,11 +157,10 @@ Note that Scheme uses the \texttt{;} as the comment character. In the example ou
 #;24>(+ 1 2 3)
 6
 \end{lstlisting}
-\subsubsection{Creating lists}
+\paragraph{Creating lists}
 Lists can be created in several different ways:
 \begin{itemize}
-\item List literals 
-\begin{lstlisting}
+\item List literals \begin{lstlisting}
 #;25>(quote (1 2 3))
 (1 2 3)
 #;26>'(1 2 3)
@@ -161,33 +171,41 @@ Lists can be created in several different ways:
 #;27>(list 1 2 3)
 (1 2 3)
 \end{lstlisting}
-\item Using the \texttt{cons} procedure to construct lists  
-\begin{lstlisting}
+\item Using the \texttt{cons} procedure to construct lists  \begin{lstlisting}
 #;28>(cons 1 (cons 2 (cons 3 '())))
 (1 2 3)
 \end{lstlisting}
-The name cons stands for "construct". The \texttt{cons} procedure creates what is known as a cons cell, a pair of pointers. These pointer pairs can be used to create a single linked list where the second part of the pair points to the next element (= cons cell) in a list. The last cons cell of a list points to a distinguished value that is not a pair in our case the empty list \texttt{()}. 
-\end{itemize}
-\subsubsection{Deconstructing lists}
-Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. These names stem from the original Lisp implementation in the late 1950's. 
+The name \texttt{cons} stands for "construct". The \texttt{cons} procedure 
+creates what is known as a cons cell, a pair of pointers. These pointer pairs 
+can be used to create a single linked list where the second part of the pair 
+points to the next element (= cons cell) in a list. The last cons cell of a 
+list points to a distinguished value that is not a pair in our case the empty 
+list \texttt{()}.  \end{itemize}
+\paragraph{Deconstructing lists}
+Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. 
+These names stem from the original Lisp implementation in the late 1950's.  
 \begin{itemize}
-\item \texttt{car} short for "Contents of the Address part of Register number" is referred to as \texttt{head} or \texttt{first} in some languages.
-\item \texttt{cdr} short for "Contents of the Decrement part of Register number" is referred to as \texttt{tail} or \texttt{rest} in some languages.
-\end{itemize} 
-\begin{lstlisting}
+\item \texttt{car} short for "Contents of the Address part of Register number" 
+  is referred to as \texttt{head} or \texttt{first} in some languages.
+\item \texttt{cdr} short for "Contents of the Decrement part of Register 
+  number" is referred to as \texttt{tail} or \texttt{rest} in some languages.
+\end{itemize} \begin{lstlisting}
 #;29>(car '(1 2 3))
 1
 #;30>(cdr '(1 2 3))
 (2 3)
 \end{lstlisting}
+\subsubsection{Functions}
+In Scheme procedures or functions are first class values as well we'll look at 
+them in detail later but first we are going to look at definitions.
 \subsection{Bindings a.k.a Definitions}
 \subsubsection{Top-level Bindings}
-\paragraph{Syntax}
-The create a top-level binding the \texttt{define} syntactic form is used which in it's most basic form looks like this:
+To create a top-level binding the \texttt{define} syntactic form is used which 
+in it's most basic form looks like this:
 \begin{equation*}
 \texttt{(define <variable> <expression>)}
 \end{equation*}
-\paragraph{Examples}
+Lets look at a few examples:
 \begin{lstlisting}
 #;31>(define fred 37)
 #;32>fred
@@ -196,188 +214,487 @@ The create a top-level binding the \texttt{define} syntactic form is used which 
 #;34>barney
 "Betty"
 \end{lstlisting}
+
 \subsubsection{Local Bindings}
 So far we have seen a way to define top level bindings, local bindings can be 
 introduced using the \texttt{let}, \texttt{let*} and \texttt{letrec} 
-syntactical forms each of them will be described below.
+syntactical forms each of them will be described below. Scheme also has a form
+ of the \texttt{let} called the named \texttt{let} which we will ignore for 
+ this workshop.
 \begin{equation*}
-\texttt{(let ((name$_{0}$ <expression$_{0}$>) $\dots$ (name$_{n}$ <expression$_{n}$>)) <body>)}
+\texttt{(let ((name$_{0}$ <expression$_{0}$>) $\dots$ (name$_{n}$ 
+<expression$_{n}$>)) <body>)}
 \end{equation*}
-\begin{listing}
 \begin{lstlisting}
 #;35>(let ((a 4) (b 3)) (* a b))
 12
-(let ((a 4) (b (* a a))) (* a b)) ; $\Rightarrow$
-;;Error: unbound variable: a
-;;
-;;	Call history:
-;;
-;;	<syntax>	  (let ((a 4) (b (* a a))) (* a b))
-;;	<syntax>	  (##core#let ((a 4) (b (* a a))) (* a b))
-;;	<syntax>	  (##core#begin (* a b))
-;;	<syntax>	  (* a b)
-;;	<syntax>	  (* a a)
-;;	<eval>	  (* a a)	<--
-(let* ((a 4) (b (* a 3))) (* a b)) ; $\Rightarrow$ 48
-(letrec (
-  (odd? (lambda (x) (if (= x 0) #f (even? (- x 1))))) 
-  (even? (lambda (x) (if (= x 0) #t (odd? (- x 1)))))) 
-    (odd? 37)) ; $\Rightarrow$ #t
+#;36>(let ((a 4) (b (* a a))) (* a b)) 
+Error: unbound variable: a
+
+    Call history:
+
+    <syntax>	  (let ((a 4) (b (* a a))) (* a b))
+    <syntax>	  (##core#let ((a 4) (b (* a a))) (* a b))
+    <syntax>	  (##core#begin (* a b))
+    <syntax>	  (* a b)
+    <syntax>	  (* a a)
+    <eval>	  (* a a)	<--
+#;37>(let* ((a 4) (b (* a 3))) (* a b))
+48
+#;38>(letrec
+  ((odd? (lambda (x) (if (= x 0) #f (even? (- x 1)))))
+   (even? (lambda (x) (if (= x 0) #t (odd? (- x 1)))))) (odd? 37))
+#t
 \end{lstlisting}
-\end{listing}
 As you can see from the interpreter output in a \texttt{let} binding the 
 different bindings can not refer to each other. In a \texttt{let*} however the 
 bindings are evaluated from left to right and the previous bindings are in the 
-scope in the subsequent bindings. The \texttt{letrec} binding can be used to 
-define mutually recursive bindings as shown in the example above. The value 
-of a \texttt{let} binding is value of the last expression in the body. Of the above 
-syntactic forms a \texttt{let} also has a form called the named \texttt{let} 
-which lets you express iteration in a succinct manner
-\begin{lstlisting}
-(let loop ((n 1))
-  (if (> n 10)
-    '()
-    (cons n (loop (+ n 1))))) ; $\Rightarrow$ (1 2 3 4 5 6 7 8 9 10)
-\end{lstlisting}
-\subsubsection{Functions}
-In Scheme procedures or functions are first class values as well we'll look at 
-them in detail in the next section.
+scope of the subsequent bindings. The \texttt{letrec} binding can be used to 
+define mutually recursive bindings as shown in the example above. The value of 
+a \texttt{let} binding is value of the last expression in the body. 
+
 \subsection{Procedures/Functions}
 \subsubsection{Creating procedures}
-Procedures can be created using the \texttt{lambda} syntactical form. Here lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} has the following information
+Procedures can be created using the \texttt{lambda} syntactical form. Here 
+lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} 
+has the following information
 \begin{quotation}
-Lambda calculus (also written as $\lambda$-calculus) is a formal system in mathematical logic and computer science for expressing computation based on function abstraction and application using variable binding and substitution. First formulated by Alonzo Church to formalize the concept of effective computability, lambda calculus found early successes in the area of computability theory, such as a negative answer to Hilbert's Entscheidungsproblem.
+Lambda calculus (also written as $\lambda$-calculus) is a formal system in 
+mathematical logic and computer science for expressing computation based on 
+function abstraction and application using variable binding and substitution. 
+First formulated by Alonzo Church to formalize the concept of effective 
+computability, lambda calculus found early successes in the area of 
+computability theory, such as a negative answer to Hilbert's 
+Entscheidungsproblem.
 \end{quotation}
-\paragraph{Syntax}
 The basic syntax of a lambda expression looks like this:
 \begin{equation*}
 \texttt{(lamdba (par$_{0} \dots$ par$_{n}$) <body>)}
 \end{equation*}
-\paragraph{Examples}
+Below you find some examples of using \texttt{lambda} expressions:
 \begin{lstlisting}
-(lambda (x) (* x x)) ; $\Rightarrow$ #<procedure (? x)>
-((lambda (x) (* x x)) 2) ; $\Rightarrow$ 4 
-((lambda (x y) (* x y)) 3 4) ; $\Rightarrow$ 12 
+#;38>(lambda (x) (* x x))
+#<procedure (? x)>
+#;39>((lambda (x) (* x x)) 2)
+4 
+#;40>((lambda (x y) (* x y)) 3 4)
+12
+#;41>(define square (lambda (x) (* x x)))
+#;43>(square 3)
+9
 \end{lstlisting}
+From the last example you can take away that combining \texttt{define} with a 
+\texttt{lambda} expression gives you a way to define functions. Similarly you 
+could use a \texttt{let} binding with a \texttt{lambda} expression to define a 
+'local' function.
 \subsubsection{Applying procedures}
-We have already seen examples of applying a procedure to arguments above. There also is a handy function called \texttt{apply} that can be used to apply a procedure to it's arguments.
+We have already seen examples of applying a procedure to arguments above. 
+There also is a handy function called \texttt{apply} that can be used to apply 
+a procedure to it's arguments.
 \begin{lstlisting}
-(apply (lambda (x y) (* x y)) '(3 4)) ; $\Rightarrow$ 12
-((lambda (x y) 
-    (* x y)) 
- (car '(3 4)) (car (cdr '(3 4)))) ; $\Rightarrow$ 12
-\end{lstlisting} 
-Using \texttt{apply} is sometimes handy because then you don't have to deconstruct the list as you can see in the example above.
+#;44>(apply (lambda (x y) (* x y)) '(3 4))
+12
+#;45>((lambda (x y) (* x y)) (car '(3 4)) (car (cdr '(3 4))))
+12
+\end{lstlisting} Using \texttt{apply} is sometimes handy because then you 
+don't have to deconstruct the list as you can see in the example above.
+\section{Fizzbuzz}
+\subsection{Writing a solution for the basic Fizzbuzz kata}
+Now that we have covered the most basic forms of Scheme we will look at some 
+more Scheme syntactic forms using the Fizzbuzz kata as a vehicle. The result 
+of completing this kata will be used in your next assignment.
+\subsubsection{The assignment}
+Write a function that for each positive integer $x$ will produce the following 
+result:
+\begin{enumerate}
+  \item if $x$ is divisible by 3 return the string "fizz"
+  \item if $x$ is divisible by 5 return the string "buzz"
+  \item if $x$ is divisible by both 3 and 5 return the string "fizzbuzz"
+  \item otherwise return $x$
+\end{enumerate}
+\subsection{Our first test}
+Since this workshop is about Test Driven Development we will start with our 
+first test. We will be using a Scheme `standard library' called SRFI 78. It is 
+already provided for us in the check.scm file. A first test would look like 
+this:
+\begin{schemecode}
+(load "check.scm")
+(check (fizzbuzz 1) => 1)
+(check-report)
+\end{schemecode}
+Saving this in a file called fizzbuzz.scm We can run this test using a 
+prepared script \texttt{run-tests} like so:
+\begin{lstlisting}
+>run-tests fizzbuzz.scm
+\end{lstlisting}
+This will result in the following output:
+\begin{lstlisting}
+
+Error: unbound variable: fizzbuzz
+
+    Call history:
+
+    <syntax>	  (##core#lambda () (fizzbuzz 1))
+    <syntax>	  (##core#begin (fizzbuzz 1))
+    <syntax>	  (fizzbuzz 1)
+    <syntax>	  (##core#undefined)
+    <eval>	  (>=426 check:mode427 1)
+    <eval>	  (check:proc428 (quote429 (fizzbuzz 1) )...
+    <eval>	  [check:proc] (eqv?60 tmp57 (quote 0))
+    <eval>	  [check:proc] (eqv?60 tmp57 (quote 1))
+    <eval>	  [check:proc] (eqv?60 tmp57 (quote 10))
+    <eval>	  [check:proc] (eqv?60 tmp57 (quote 100))
+    <eval>	  [check:proc] (check:report-expression expression)
+    <eval>	  [check:report-expression] (newline)
+    <eval>	  [check:report-expression] (check:write expression)
+    <eval>	  [check:report-expression] (display " => ")
+    <eval>	  [check:proc] (thunk)
+    <eval>	  (fizzbuzz 1)	<--
+\end{lstlisting}
+Our test can not be interpreted because we have not yet defined our 
+\texttt{fizzbuzz} procedure. Lets look at the code and explain each line 
+one by one:
+
+\begin{enumerate}
+  \item line 1: loads our unit testing library of choice, the check library
+  \item line 2: this is our first assert you could read this as: verify that calling 
+    the \texttt{fizzbuzz} function with \texttt{1} will result in the value 
+    \texttt{1}
+ \item line 3: this last line creates a report of our results.
+\end{enumerate}
+Now we have to define the first revision of our \texttt{fizzbuzz} function, 
+to keep things simple we will write our production code in the same file as 
+our test code. Here is the first implementation of our \texttt{fizzbuzz} 
+function:
+\begin{schemecode}
+(load "check.scm")
+
+(define fizzbuzz (lambda (x) 1))
+
+(check (fizzbuzz 1) => 1)
+
+(check-report)
+\end{schemecode}
+\begin{lstlisting}
+>run-tests fizzbuzz.scm
+
+(fizzbuzz 1) => 1 ; correct
+
+; *** checks *** : 1 correct, 0 failed.
+\end{lstlisting}
+Great our first passing test. Lets add our next test case.  
+\begin{schemecode}
+(load "check.scm")
+
+(define fizzbuzz (lambda (x) 1))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+
+(check-report)
+\end{schemecode}
+\begin{lstlisting}
+>run-tests fizzbuzz.scm
+
+(fizzbuzz 1) => 1 ; correct
+
+(fizzbuzz 2) => 1 ; *** failed ***
+ ; expected result: 2
+
+; *** checks *** : 1 correct, 1 failed. First failed example:
+
+(fizzbuzz 2) => 1 ; *** failed ***
+ ; expected result: 2
+
+\end{lstlisting}
+To save some space in this document we will use the \texttt{report-failed} 
+mode of our test library in the next runs. Making this failing test pass is a 
+matter of replacing our constant with a parameter.
+\begin{schemecode}
+(load "check.scm")
+(check-set-mode! 'report-failed)
+
+(define fizzbuzz (lambda (x) x))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+
+(check-report)
+\end{schemecode}
+\begin{lstlisting}
+>run-tests fizzbuzz.scm
+
+; *** checks *** : 2 correct, 0 failed.  \end{lstlisting}
+Excellent. Now lets add our next test case.
+\begin{schemecode}
+(load "check.scm")
+(check-set-mode! 'report-failed)
+
+(define fizzbuzz (lambda (x) x))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+(check (fizzbuzz 3) => "fizz")
+
+(check-report)
+\end{schemecode}
+\begin{lstlisting}
+>run-tests fizzbuzz.scm
+
+(fizzbuzz 3) => 3 ; *** failed ***
+ ; expected result: "fizz"
+
+; *** checks *** : 2 correct, 1 failed. First failed example:
+
+(fizzbuzz 3) => 3 ; *** failed ***
+ ; expected result: "fizz"
+\end{lstlisting}
+
+To be able to make the failing test pass we need to know how we can write 
+conditional expressions in Scheme, luckilly that is the topic of the next 
+section.
+
 \subsection{Conditionals}
-\subsubsection{\texttt{if}}
-Scheme alse has a number of conditional expressions the simplest of which the 
-\texttt{if} form has the following syntax:
+\paragraph{\texttt{if}}
+The simplest conditional expression in Scheme is the \texttt{if} expression 
+which
+has the following syntax:
 \begin{equation*}
     \texttt{(if <expression> <then expression> [<else expression>])}
 \end{equation*}
-The value of the if expression is the value of 
-the expression that gets evaluated depending on the value of the 
-\texttt{<expression>}, the else expression is optional. If the 
-\texttt{<expression>} evaluates to false and the else expression is missing 
-than the value of the if expression is undefined.
-\paragraph{Examples}
+The value of the if expression is the value of the expression that gets 
+evaluated depending on the value of the \texttt{<expression>}, the else 
+expression is optional. If the \texttt{<expression>} evaluates to false and 
+the else expression is missing than the value of the if expression is 
+undefined.
+
+Now we can make our failing test pass:
+\begin{schemecode}
+(load "check.scm")
+(check-set-mode! 'report-failed)
+
+(define fizzbuzz (lambda (x) (if (= 3 x) "fizz" x)))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+(check (fizzbuzz 3) => "fizz")
+
+(check-report)
+\end{schemecode}
 \begin{lstlisting}
-(if #t 37 42) ; $\Rightarrow$ 37
-(if #f 37 42) ; $\Rightarrow$ 42
-(if #f 37) ; evaluates to `nothing` in Chicken Scheme
+>run-tests fizzbuzz.scm
+
+; *** checks *** : 3 correct, 0 failed.
 \end{lstlisting}
-\subsubsection{\texttt{cond}}
-Scheme also has a syntactic form, \texttt{cond} that can contain multiple 
-predicates:
+The next interesting case is of course the number 5.  \begin{schemecode}
+(load "check.scm")
+(check-set-mode! 'report-failed)
+
+(define fizzbuzz (lambda (x) (if (= 3 x) "fizz" x)))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+(check (fizzbuzz 3) => "fizz")
+(check (fizzbuzz 5) => "buzz")
+
+(check-report)
+\end{schemecode}
+To make it pass we could use a nested if but Scheme provides us with the 
+\texttt{cond} expression which reads a lot nicer.
+\paragraph{\texttt{cond}}
+Below the syntax for the \texttt{cond} syntactic form:
 \begin{lstlisting}[mathescape]
-  (cond ((<predicate>$_{0}$) <expression>$_{0}$) 
-        $\vdots$ 
-        ((<predicate$_{n}$) <expression>$_{n}$) 
-        [(else <expression$_{n+1}$)])
+  (cond ((<predicate>$_{0}$) <expression>$_{0}$) $\vdots$ ((<predicate$_{n}$) 
+  <expression>$_{n}$) [(else <expression$_{n+1}$)])
 \end{lstlisting}
 Each of the predicates gets evaluated in order of appearance the value of the 
 \texttt{cond} expression is the value of the expression of the first predicate 
 that evaluated to true. A \texttt{cond} expression can have an optional 
 \texttt{else} clause that will be evaluated if none of the predicates 
 evaluated to true.
-\paragraph{Examples}
+\begin{schemecode}
+(load "check.scm")
+(check-set-mode! 'report-failed)
+
+(define fizzbuzz (lambda (x) (cond ((= 3 x) "fizz")
+          ((= 5 x) "buzz")
+          (else x))))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+(check (fizzbuzz 3) => "fizz")
+(check (fizzbuzz 5) => "buzz")
+
+(check-report)
+\end{schemecode}
 \begin{lstlisting}
-(cond ((= 37 42) "Fred")
-      ((< 37 42) "Barney")
-      (else "Wilma")) ; $\Rightarrow$ "Barney"
-\end{lstlisting}
-This concludes our discussion about a very limited but sufficient subset of 
-the Scheme programming languages, in the next section we will look at how to 
-write tests using the test library.
-\section{Testing Scheme code}
-\subsection{Writing tests}
-The environment we will use already loads the test library by default so all 
-we need to look at here is the syntax for writing tests. The test library 
-has several functions that can be used to write assertions let's look at some 
-examples:
-\begin{lstlisting}
-(test 37  (+ 33 3)) ; $\Rightarrow$ 
-;; (+ 33 3) ......................................... [ ${\color{red}\texttt{FAIL}}$]
-;;    expected 37 but got 36
-;;FAIL
-(test "A test with a nice description" 37 (- 42 4)) ; $\Rightarrow$
-;; A test with a nice description ................... [ ${\color{red}\texttt{FAIL}}$]
-;;    expected 37 but got 38
-;;    (- 42 4)
-;;FAIL
-(test-assert #f) ; $\Rightarrow$
-;; .................................................. [ ${\color{red}\texttt{FAIL}}$]
-;;    assertion failed
-;;FAIL
-(test-assert #t) ; $\Rightarrow$
-;;#t ................................................ [ ${\color{green}\texttt{PASS}}$]
-;;PASS
-(test-error "should result in an error" #f) ; $\Rightarrow$
-;;should result in an error ......................... [ ${\color{red}\texttt{FAIL}}$]
-;;    expected an error but got #f
-;;FAIL
-(test-error (1 2)) ; $\Rightarrow$
-;;(1 2) ............................................. [ ${\color{green}\texttt{PASS}}$]
-;;PASS
-\end{lstlisting}
+>run-tests fizzbuzz.scm
+
+; *** checks *** : 4 correct, 0 failed.  \end{lstlisting}
+The rest of the kata can now be implemented, all the Scheme constructs that we 
+will need have been introduced. All that we need to know is does Scheme have 
+something like a `remainder' or `modulus' function. The function to use here 
+is the \texttt{modulo} function. Below you find the finished implementation:
+\begin{schemecode}
+(load "check.scm")
+(check-set-mode! 'report-failed)
+
+(define fizzbuzz (lambda (x) (define divisible-by?  (lambda (divisor number)
+        (= 0 (modulo number divisor))))
+    (cond ((divisible-by? 15 x) "fizzbuzz")
+        ((divisible-by? 3 x) "fizz")
+        ((divisible-by? 5 x) "buzz")
+          (else x))))
+
+(check (fizzbuzz 1) => 1)
+(check (fizzbuzz 2) => 2)
+(check (fizzbuzz 3) => "fizz")
+(check (fizzbuzz 5) => "buzz")
+(check (fizzbuzz 6) => "fizz")
+(check (fizzbuzz 7) => 7)
+(check (fizzbuzz 10) => "buzz")
+(check (fizzbuzz 15) => "fizzbuzz")
+(check (fizzbuzz 30) => "fizzbuzz")
+(check-report)
+\end{schemecode}
+\section{Assignment l: removing code duplication}
 \subsection{Running tests}
 To make running tests easy during this workshop we will be using a 
 \texttt{watchr} script that will automatically run our tests when they are 
 saved. To start watching the home directory of the fp user for changes, open a 
-terminal window clicking on the desktop and selecting Terminal from the menu. 
-At the prompt type the following command:
-\begin{alltt}
+terminal window by clicking on the desktop and selecting Terminal from the 
+menu.  At the prompt type the following command:
+\begin{lstlisting}
 > begin-watching-tests
-\end{alltt}
-\section{DRY-ing up test code using higher order functions}
+\end{lstlisting}
+\subsection{DRY-ing up test code using higher order functions}
 During this excercise we will remove some duplication (DRY= Don't Repeat 
-Yourself) from test code using higher order functions (functions that take 
-other functions as parameters or return funtions as their result). Some code 
-for this exercise has been prepared for you in the \texttt{fizzbuzz.scm} file. 
-Start by opening it using any of the available editors from the menu. This 
-file contains some production and test code that implements the basic fizzbuzz 
-kata. The assignment was to create a fizzbuzz function that takes an integer 
-and returns `fizz` if the integer is divisible by 3, `buzz` if it is divisible 
-by 5, `fizzbuzz` if it is divisible by both 3 and 5 and the integer given as 
-input otherwise.
-\subsection{Extract `method`}
+Yourself) from the test code we created earlier using higher order functions 
+(functions that take other functions as parameters or return funtions as their 
+result). The code for this exercise is in the \texttt{fizzbuzz.scm} file.  
+Start by opening it using any of the available editors from the menu.  
+\subsection{`Extract method'}
 Remove some of the duplication by extracting a function that takes as 
 parameters the input integer and the expected output. This function should 
-invoke the test method such that calling this new function executes a 
-single test case.
+invoke the test method such that calling this new function executes a single 
+test case. Use this function in each of the test cases.
 \subsection{Reduce duplication further using \texttt{map}}
 Now we will remove even more duplication by using the \texttt{map} and 
 \texttt{apply} functions. We saw the \texttt{apply} function in the 
 introduction it takes a function and a list as arguments and applies the 
 supplied function to the supplied arguments in the list. The \texttt{map} 
-function takes a function and a list as at parameters and returns a new list 
+function takes a function and a list as its parameters and returns a new list 
 consisting of the function applied to each of the elements in the list.
 Here is a short example
 \begin{lstlisting}
-(map (lambda (x) (* x x)) '(1 2 3)) ; $\Rightarrow$ (1 4 9)
+#;46>(map (lambda (x) (* x x)) '(1 2 3))
+(1 4 9)
 \end{lstlisting}
 The assignment is to use the \texttt{map} and \texttt{apply} functions to 
 rewrite the tests as an applycition of \texttt{map} on a list of test cases.
 You should use a \texttt{let} binding to avoid poluting the global namespace.
-\bibliography{handout} 
+\section{Assignment 2: Legacy code}
+Some of you may know the legendary Hewlett-Packard calculators from the good 
+old days that use Reverse Polish Notation (RPN). A form of notation that first 
+denotes the operands followed by the operator. This assignment works with a 
+RPN calculator
+written in Scheme. It uses a stack to hold intermediary results, it can read a 
+Scheme expression pushes all numbers it encounters onto the stack and when it 
+encounters an operator pops the 2 operands of the stack applies the operator 
+and pushes the result back onto the stack. Below you find some examples of 
+using this calculator.
+\begin{lstlisting}
+#;47>(load "stack-calculator.scm")
+#;48>(rpn '(37 42 23 + *))
+2405
+\end{lstlisting}
+Lets first briefly look over the code:
+\begin{schemecode}
+(define (rpn expression)
+  (define operator? 
+    (lambda (expression)
+      (let ((token (car expression)))
+        (or (eqv? '+ token)
+            (eqv? '- token)
+            (eqv? '* token)
+            (eqv? '/ token)))))
+  (define operator 
+    (lambda (expression) 
+      (car expression)))
+  (define calculate 
+    (lambda (exp stack)
+      (if (null? expression)
+        "there is nothing to calculate!"
+        (cond ((null? exp) (car stack))
+              ((operator? exp)
+               (let* ((first-operand (cadr stack))
+                      (second-operand (car stack))
+                      (result (eval (list 
+                                      (operator exp) 
+                                      first-operand 
+                                      second-operand))))
+                 (calculate (cdr exp) (cons result (cddr stack)))))
+              (else (calculate (cdr exp) (cons (car exp) stack)))))))
+  (calculate expression '()))
+\end{schemecode}
+This code contains a few functions that we have not yet discussed:
+\begin{enumerate}
+  \item lines 5-8: \texttt{eqv?} tests the equivalency of its argument since here in lines 
+    5-8 only symbols are used this means equality
+  \item line 14.16: \texttt{null?} returns true if its parameter is the empty list
+  \item line 18: \texttt{cadr} is a composition of \texttt{cdr} and \texttt{car} 
+    \begin{equation*}
+      \texttt{(cadr alist)} \Rightarrow \texttt{(car (cdr list))}
+    \end{equation*}
+  \item line 20: \texttt{eval} evaluates the given list in the same manner as the 
+    Scheme interpreter would, which means evaluate the first element of the 
+    list to a procedure definition evaluate the rest of the elements and 
+    supply them as the formal parameters to the procedure.
+  \item line 24: \texttt{cddr} is a composition of \texttt{cdr} with itself
+    \begin{equation*}
+      \texttt{(cddr alist)} \Rightarrow \texttt{(cdr (cdr alist))}
+    \end{equation*}
+\end{enumerate}
+\subsection{Building the safety net}
+Start by writing some tests that validate the current behavior of the 
+\texttt{rpn} function. When you feel you have captured enough of the current 
+behavior of the function proceed to the next assignment.
+\subsection{Adding the \texttt{\^{}} operator}
+Extend the \texttt{rpn} function such that it can understand expresions that 
+contain the \texttt{\^{}} operator which should calculate the power function.  
+\begin{equation*}
+\texttt{(rpn '(2 3 \^{}))} \Rightarrow 2^{3} \Rightarrow 8 
+\end{equation*}
+
+\subsubsection{Optional: baby steps}
+To accomplish the above task it can be helpfull if you promote the 
+\texttt{operartor?} and \texttt{operator} functions to top level bindings such 
+that you can write separate test cases for these individual functions.
+\subsection{Adding the \texttt{sqrt} function}
+Upto now the calculator only understands binary operators, extend the 
+calculator such that expressions can contain the \texttt{sqrt} operator that 
+applies the \texttt{sqrt} function to the operand on the top of the stack.  
+\begin{equation*}
+  \texttt{(rpn '(9 sqrt))} \Rightarrow \sqrt{9} \Rightarrow 3.0
+\end{equation*}
+The Scheme function that calculates the square root of its argument is called 
+\texttt{sqrt}.
+\begin{enumerate}
+  \item Create the \texttt{unary-operator?} function that can tell if the 
+    first element in the expression is a unary operator or not. 
+  \item Use this function in the \texttt{operator?} function.
+  \item Extend the \texttt{operator} function to return the \texttt{sqrt} function as a 
+    translation for \texttt{sqrt}.
+  \item Extend the \texttt{calculate} function to take unary operators into 
+    account.
+  \item Introduce an evaluate function that calls \texttt{eval}. You need to 
+    make this a function with a variable number of arguments. Such a function 
+    can be defined using the follwing syntax
+    \begin{equation*}
+      \texttt{(lambda (<parameter>$_{0} \dots $<parameter>$_{n}$ . <rest>) <body>)}
+    \end{equation*}
+    In the body of the \texttt{lambda} expression the \texttt{rest} parameter 
+    will be bound to a list containing the parameters$_{n+1}$ and beyond.
+\end{enumerate}
+\bibliography{handout}
 \end{document}

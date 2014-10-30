@@ -1,0 +1,62 @@
+;; Binary numbers
+#b100101
+;; Octal numbers
+#o45
+;; Hexadecimal numbers
+#x25
+;; Rational numbers
+23/5
+;; Rational number with Hexadecimals
+#x20/1a 
+;; Floating point numbers
+1.3552e-12
+.2342
+;; Complex numbers
+1+37i
+37@1.7
+;; Characters
+#\a
+#\newline
+#\j
+;; Strings
+"Fred Flinstone"
+"Barney Rubbles"
+;; Symbols
+'Fred
+(string->symbol "Fred Flinstone")
+;; Lists 
+(1 2 3)
+;; Quoting
+(quote (1 2 3))
+'(1 2 3)
+(+ 1 2 3)
+;; Creating lists
+(quote (1 2 3))
+'(1 2 3)
+(list 1 2 3)
+;; Constructing lists
+(cons 1 (cons 2 (cons 3 '())))
+;; Deconstructing lists
+(car '(1 2 3))
+(cdr '(1 2 3))
+;; Bindings
+(define fred 37)
+fred
+(define barney "Betty")
+barney
+(let ((a 4) (b 3)) (* a b))
+(let ((a 4) (b (* a a))) (* a b)) 
+(let* ((a 4) (b (* a 3))) (* a b))
+(letrec
+  ((odd? (lambda (x) (if (= x 0) #f (even? (- x 1)))))
+   (even? (lambda (x) (if (= x 0) #t (odd? (- x 1)))))) (odd? 37))
+;; procedures
+(lambda (x) (* x x))
+((lambda (x) (* x x)) 2)
+((lambda (x y) (* x y)) 3 4)
+(define square (lambda (x) (* x x)))
+(square 3)
+;; applying procedures
+(apply (lambda (x y) (* x y)) '(3 4))
+((lambda (x y) (* x y)) (car '(3 4)) (car (cdr '(3 4))))
+
