@@ -24,6 +24,9 @@
 ;; Symbols
 'Fred
 (string->symbol "Fred Flinstone")
+(eq? 'Fred 'Fred)
+(eq? "Fred" "Fred")
+(equal? "Fred" "Fred")
 ;; Lists 
 (1 2 3)
 ;; Quoting

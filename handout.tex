@@ -47,13 +47,14 @@ Before we start a few typographical conventions all text written in a
 \texttt{monospaced font} is either a Scheme keyword or text provided or 
 returned from the Scheme interpreters REPL (Read Eval Print Loop), a console 
 application that evaluates Scheme expressions as you provide them. The prompt 
-of the REPL starts with 
-\texttt{\#;<successfully-evaluated-expression-number>$\texttt{>}$}. Note that 
-Scheme uses the \texttt{;} as the comment character.  
+of the REPL starts with a hash \texttt{\#}, followed by a semicolon \texttt{;}, the 
+character that starts a comment in Scheme, followed by a counter of the number 
+of successfully evaluated expressions, followed by the greater than \texttt{>} 
+symbol. For example \texttt{\#;37>}.
 \subsection{Introduction}
 Since Scheme is a LISP (LISt Processing) dialect the central syntactical 
 element in the language is the list. But before we dive into lists lets look 
-at Scheme's 'primitive' expressions, that is expression that evaluate to 
+at Scheme's `primitive' expressions, that is expression that evaluate to 
 themselves. In Scheme these are: booleans, numbers, characters, strings, 
 symbols and vectors.
 \subsection{Boolean values}
@@ -97,8 +98,7 @@ Scheme supports the following types of numbers
 \end{lstlisting}
 \end{itemize}
 \subsection{Characters}
-The syntax for writing characters is somewhat different than most other 
-programming languages. Character literals are preceded by the 
+Character literals are preceded by the 
 \texttt{\#\textbackslash} characters.
 \begin{lstlisting}
 #;15>#\a
@@ -117,19 +117,31 @@ Strings are written as a number of characters surrounded by double-quotes.
 "Barney Rubbles"
 \end{lstlisting}
 \subsection{Symbols}
-A symbol is like an immutable string for which strings with the same content 
-will refer to the same object such that they can be easily compared with 
-\texttt{eq?} (essentially pointer comparison).
+A symbol is an immutable string for which strings with the same content 
+will refer to the same object. Symbols can be compared with 
+\texttt{eq?} (essentially pointer comparison), whereas string need to be 
+compared by looking at their contents with \texttt{equal?}. Let's look at some 
+examples:
 \begin{lstlisting}
 #;20>'Fred
 Fred
 #;21>(string->symbol "Fred Flinstone")
 |Fred Flinstone|
+#;22>(eq? 'Fred 'Fred)
+#t
+#;23>(eq? "Fred" "Fred")
+#f
+#;24>(equal? "Fred" "Fred")
+#t
 \end{lstlisting}
 \subsection{Other types of objects}
 \subsubsection{Lists}
 A list is denoted as a \texttt{'('} followed by elements separated by spaces 
-followed by a \texttt{')'}.
+followed by a \texttt{')'}. Since the list is also the primary syntactical 
+construct of the Scheme language lists are interpreted in a special way. The 
+interpreter tries to evaluate the first element of the list to a procedure and 
+applies that procedure with the rest of the elements in the list as the 
+arguments to the procedure.
 \begin{lstlisting}
 #;22>(1 2 3)
 Error: call of non-procedure: 1
@@ -205,7 +217,7 @@ in it's most basic form looks like this:
 \begin{equation*}
 \texttt{(define <variable> <expression>)}
 \end{equation*}
-Lets look at a few examples:
+Some examples:
 \begin{lstlisting}
 #;31>(define fred 37)
 #;32>fred
@@ -216,11 +228,8 @@ Lets look at a few examples:
 \end{lstlisting}
 
 \subsubsection{Local Bindings}
-So far we have seen a way to define top level bindings, local bindings can be 
-introduced using the \texttt{let}, \texttt{let*} and \texttt{letrec} 
-syntactical forms each of them will be described below. Scheme also has a form
- of the \texttt{let} called the named \texttt{let} which we will ignore for 
- this workshop.
+Local bindings can be introduced using the \texttt{let}, \texttt{let*} and 
+\texttt{letrec} syntactical forms each of them will be described below.
 \begin{equation*}
 \texttt{(let ((name$_{0}$ <expression$_{0}$>) $\dots$ (name$_{n}$ 
 <expression$_{n}$>)) <body>)}
@@ -256,22 +265,12 @@ a \texttt{let} binding is value of the last expression in the body.
 \subsection{Procedures/Functions}
 \subsubsection{Creating procedures}
 Procedures can be created using the \texttt{lambda} syntactical form. Here 
-lambda refers back to the lambda calculus. About which wikipedia \cite{lambda} 
-has the following information
-\begin{quotation}
-Lambda calculus (also written as $\lambda$-calculus) is a formal system in 
-mathematical logic and computer science for expressing computation based on 
-function abstraction and application using variable binding and substitution. 
-First formulated by Alonzo Church to formalize the concept of effective 
-computability, lambda calculus found early successes in the area of 
-computability theory, such as a negative answer to Hilbert's 
-Entscheidungsproblem.
-\end{quotation}
+lambda refers back to the lambda calculus \cite{lambda}.
 The basic syntax of a lambda expression looks like this:
 \begin{equation*}
 \texttt{(lamdba (par$_{0} \dots$ par$_{n}$) <body>)}
 \end{equation*}
-Below you find some examples of using \texttt{lambda} expressions:
+Examples of \texttt{lambda} expressions:
 \begin{lstlisting}
 #;38>(lambda (x) (* x x))
 #<procedure (? x)>
@@ -286,7 +285,7 @@ Below you find some examples of using \texttt{lambda} expressions:
 From the last example you can take away that combining \texttt{define} with a 
 \texttt{lambda} expression gives you a way to define functions. Similarly you 
 could use a \texttt{let} binding with a \texttt{lambda} expression to define a 
-'local' function.
+`local' function.
 \subsubsection{Applying procedures}
 We have already seen examples of applying a procedure to arguments above. 
 There also is a handy function called \texttt{apply} that can be used to apply 
@@ -317,6 +316,7 @@ Since this workshop is about Test Driven Development we will start with our
 first test. We will be using a Scheme `standard library' called SRFI 78. It is 
 already provided for us in the check.scm file. A first test would look like 
 this:
+\subsubsection{A first test case}
 \begin{schemecode}
 (load "check.scm")
 (check (fizzbuzz 1) => 1)
@@ -362,6 +362,7 @@ one by one:
     \texttt{1}
  \item line 3: this last line creates a report of our results.
 \end{enumerate}
+\subsubsection{The first fizzbuzz implementation}
 Now we have to define the first revision of our \texttt{fizzbuzz} function, 
 to keep things simple we will write our production code in the same file as 
 our test code. Here is the first implementation of our \texttt{fizzbuzz} 
@@ -382,6 +383,7 @@ function:
 
 ; *** checks *** : 1 correct, 0 failed.
 \end{lstlisting}
+\subsubsection{The second test case}
 Great our first passing test. Lets add our next test case.  
 \begin{schemecode}
 (load "check.scm")
@@ -407,6 +409,7 @@ Great our first passing test. Lets add our next test case.
  ; expected result: 2
 
 \end{lstlisting}
+\subsubsection{Making our second test case pass}
 To save some space in this document we will use the \texttt{report-failed} 
 mode of our test library in the next runs. Making this failing test pass is a 
 matter of replacing our constant with a parameter.
@@ -424,8 +427,10 @@ matter of replacing our constant with a parameter.
 \begin{lstlisting}
 >run-tests fizzbuzz.scm
 
-; *** checks *** : 2 correct, 0 failed.  \end{lstlisting}
+; *** checks *** : 2 correct, 0 failed.  
+\end{lstlisting}
 Excellent. Now lets add our next test case.
+\subsubsection{The third test case}
 \begin{schemecode}
 (load "check.scm")
 (check-set-mode! 'report-failed)
@@ -469,6 +474,7 @@ the else expression is missing than the value of the if expression is
 undefined.
 
 Now we can make our failing test pass:
+\subsubsection{Making the third test case pass}
 \begin{schemecode}
 (load "check.scm")
 (check-set-mode! 'report-failed)
@@ -486,7 +492,9 @@ Now we can make our failing test pass:
 
 ; *** checks *** : 3 correct, 0 failed.
 \end{lstlisting}
-The next interesting case is of course the number 5.  \begin{schemecode}
+The next interesting case is of course the number 5.  
+\subsubsection{The fourth test case}
+\begin{schemecode}
 (load "check.scm")
 (check-set-mode! 'report-failed)
 
@@ -512,6 +520,7 @@ Each of the predicates gets evaluated in order of appearance the value of the
 that evaluated to true. A \texttt{cond} expression can have an optional 
 \texttt{else} clause that will be evaluated if none of the predicates 
 evaluated to true.
+\subsubsection{Making the fourth test case pass}
 \begin{schemecode}
 (load "check.scm")
 (check-set-mode! 'report-failed)
@@ -532,14 +541,18 @@ evaluated to true.
 
 ; *** checks *** : 4 correct, 0 failed.  \end{lstlisting}
 The rest of the kata can now be implemented, all the Scheme constructs that we 
-will need have been introduced. All that we need to know is does Scheme have 
+will need have been introduced. All that we need to know is, does Scheme have 
 something like a `remainder' or `modulus' function. The function to use here 
 is the \texttt{modulo} function. Below you find the finished implementation:
+\subsubsection{The completed solution for our FizzBuzz kata}
 \begin{schemecode}
 (load "check.scm")
 (check-set-mode! 'report-failed)
 
-(define fizzbuzz (lambda (x) (define divisible-by?  (lambda (divisor number)
+(define fizzbuzz 
+  (lambda (x) 
+    (define divisible-by?  
+      (lambda (divisor number)
         (= 0 (modulo number divisor))))
     (cond ((divisible-by? 15 x) "fizzbuzz")
         ((divisible-by? 3 x) "fizz")
@@ -561,12 +574,9 @@ is the \texttt{modulo} function. Below you find the finished implementation:
 \subsection{Running tests}
 To make running tests easy during this workshop we will be using a 
 \texttt{watchr} script that will automatically run our tests when they are 
-saved. To start watching the home directory of the fp user for changes, open a 
-terminal window by clicking on the desktop and selecting Terminal from the 
-menu.  At the prompt type the following command:
-\begin{lstlisting}
-> begin-watching-tests
-\end{lstlisting}
+saved. When you start up the virtual machine you will be greated with a split 
+console window. The top asks you which editor you would like to use during 
+this session, the lower part will contain the output of running the our tests.
 \subsection{DRY-ing up test code using higher order functions}
 During this excercise we will remove some duplication (DRY= Don't Repeat 
 Yourself) from the test code we created earlier using higher order functions 
@@ -667,8 +677,8 @@ contain the \texttt{\^{}} operator which should calculate the power function.
 \end{equation*}
 
 \subsubsection{Optional: baby steps}
-To accomplish the above task it can be helpfull if you promote the 
-\texttt{operartor?} and \texttt{operator} functions to top level bindings such 
+To accomplish the above task it can be helpful if you promote the 
+\texttt{operator?} and \texttt{operator} functions to top level bindings such 
 that you can write separate test cases for these individual functions.
 \subsection{Adding the \texttt{sqrt} function}
 Upto now the calculator only understands binary operators, extend the 
