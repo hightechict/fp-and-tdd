@@ -17,5 +17,5 @@ clear
 if [ $retval -ne 0 ]; then
 	echo "Please open the file fizzbuzz.scm in your favorite editor."
 fi
-file=fizzbuzz.scm
+file=~/fizzbuzz.scm
 exec $choice $file
