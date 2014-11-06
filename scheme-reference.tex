@@ -44,7 +44,7 @@
 (and exp1 exp2 ...) ; short circuit, 
 ; do both exp1 and exp2 and ...  evaluate to 
 ; a truthy value
-(or exp1 exp2 ....) ; short circuit
+(or exp1 exp2 ...) ; short circuit
 (not expression) ; logical negation
 ;; numbers
 12 ; integer
@@ -67,10 +67,12 @@
 (car '(1 2 3)) ; $\Rightarrow$ 1
 (cdr '(1 2 3)) ; $\Rightarrow$ (2 3)
 (cons 2 (cons 1 '())) ; $\Rightarrow$ (2 1)
-\end{schemecode}
-\vfill
-\columnbreak
-\begin{schemecode}
+;; some additional list procedures
+(cadr '(1 2 3)) ; $\Rightarrow$ 2
+(cddr '(1 2 3)) ; $\Rightarrow$ (3)
+(caddr '(1 2 3)) ; $\Rightarrow$ 3
+(cdar '((1 2) 3)) ; $\Rightarrow$ 2
+(null? '()) ; is this the empty list
 ;; variables
 (define fred 37) ; binds fred to the value 37
 ; create local binding for name
@@ -85,7 +87,7 @@
 (cond (test body)
   (test1 body)
   (else else-body))
-; load moduele
+; load module
 (load "somefilename.scm")
 ;; testing 
 (check-set-mode! 'report-failed) ; set reporting mode
@@ -95,13 +97,16 @@
 ; check that evaluating expression evaluates to expected
 (check-report) ; produce result output
 ;; standard functions
-(null? '()) ; is this the empty list
-(map (lambda (x) (* x x) some-list)) ; create a new list 
-; containing the results of applying the lambda 
+; create a new list containing the results of applying the lambda 
 ; expression to each of the elements in the list
+(map (lambda (x) (* x x)) '(2 3 4)) ; $\Rightarrow$ (4 9 16) 
 (apply proc argument-list) ; apply proc to argument-list
+;; evaluate a list like the Scheme evaluator would
+(eval '(+ 1 2 3)) ; $\Rightarrow$ 6 
+;; some more procedures for numbers
 (modulo 5 3) ; $\Rightarrow$ 2
 (sqrt 9) ; $\Rightarrow$ 3.0
+
 \end{schemecode}
 \end{multicols}
 \end{document}
