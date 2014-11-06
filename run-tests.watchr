@@ -1,3 +1,4 @@
+system "clear"
 watch('(.*\.scm)$') { |md| 
   file = "#{md[0]}"
   system "clear"
