@@ -1,0 +1,103 @@
+\documentclass[10pt,a4paper,landscape,english,twoside]{article}
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lmodern}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{array}
+\lstset{frame=single,keepspaces=true,numbers=none,tabsize=2}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\usepackage[cm]{fullpage}
+\setlength{\headsep}{10pt}
+\setlength{\footskip}{20pt}
+\addtolength{\textheight}{-30pt}
+\newminted{scheme}{linenos=true,mathescape,xleftmargin=20px}
+\usepackage{natbib}  \bibliographystyle{chicago}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headheight}{35pt}
+\pagestyle{empty}
+\begin{document}
+\begin{multicols}{2}
+\subsection*{Diakonos}
+{
+\setlength{\extrarowheight}{1.5pt}
+\begin{tabular}[t]{|l|l|}
+\hline
+Open a file            & Ctrl-O\\ \hline
+Save                   & Ctrl-S\\ \hline
+Close a file           & Ctrl-W\\ \hline
+Create a new buffer    & Ctrl-N\\ \hline
+Quit                   & Ctrl-Q\\ \hline
+Copy the selected text & Ctrl-C\\ \hline
+Cut the selected text  & Ctrl-X\\ \hline
+Paste                  & Ctrl-V\\ \hline
+Find                   & Ctrl-F\\ \hline
+Find and replace       & Ctrl-R\\ \hline
+Find again             & F3\\ \hline
+Undo                   & Ctrl-Z\\ \hline
+Redo                   & Ctrl-Y\\ \hline
+Help                   & F1\\ \hline
+Next word              & Ctrl-right or Alt-right\\ \hline
+Previous word          & Ctrl-left or Alt-left\\ \hline
+Begin selecting text   & Ctrl-space\\ \hline
+Stop selecting text    & Alt-U\\ \hline
+Save buffer as         & Alt-Shift-S\\ \hline
+Clear match highlights & Ctrl-Alt-U\\ \hline
+Smart indent           & Tab\\ \hline
+Switch to buffers      & Alt-1, Alt-2, etc.\\
+&Alt-0 0 for 10\\ \hline
+List buffers           & Ctrl-Alt-B\\ \hline
+\end{tabular}
+}
+\subsection*{tmux}
+{
+\setlength{\extrarowheight}{1.5pt}
+\begin{tabular}[t]{|l|l|}
+\hline
+Enter Copy Mode & Ctrl-a [ \\ \hline
+\hspace{0.5cm} Start selection & <space> \\ \hline
+\hspace{0.5cm} Modify selection & arrow keys \\ \hline
+\hspace{0.5cm} Copy selection & <enter> \\ \hline
+Paste & Ctrl-a ] \\ \hline
+Goto next window & Ctrl-a n \\ \hline
+Goto previous window & Ctrl-a p \\ \hline
+Create a new window & Ctrl-a c \\ \hline
+Split window horizontally & Ctrl-a - \\ \hline
+Split window vertically & Ctrl-a | \\ \hline
+Move to pane on the left & Ctrl-a h \\ \hline
+Move to pane on the right & Ctrl-a l \\ \hline
+Move to pane below & Ctrl-a j \\ \hline
+Move to pane above & Ctrl-a k \\ \hline
+Enter Ctrl-a & Ctrl-a Ctrl-a \\ \hline
+\end{tabular}
+}
+\subsection*{Chicken REPL}
+{
+\setlength{\extrarowheight}{1.5pt}
+\begin{tabular}[t]{|l|l|}
+\hline
+Exit & \texttt{(exit)} \\ \hline
+Select previous expression & Up arrow \\
+& Ctrl-p \\ \hline
+Select next expression & Down arrow \\ 
+& Ctrl-n \\ \hline
+Start the interpreter & \texttt{csi} \\ \hline
+\end{tabular}
+}
+
+
+\end{multicols}
+\end{document}

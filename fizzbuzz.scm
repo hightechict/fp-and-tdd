@@ -2,9 +2,9 @@
 
 (define fizzbuzz 
   (lambda (x) 
-    (cond ((= 0 (mod x 15)) "fizzbuzz")
-          ((= 0 (mod x 3)) "fizz")
-          ((= 0 (mod x 5)) "buzz")
+    (cond ((= 0 (modulo x 15)) "fizzbuzz")
+          ((= 0 (modulo x 3)) "fizz")
+          ((= 0 (modulo x 5)) "buzz")
           (else x))))
 (let (
       (check-fizzbuzz 

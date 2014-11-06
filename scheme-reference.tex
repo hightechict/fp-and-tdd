@@ -1,0 +1,107 @@
+\documentclass[10pt,a4paper,landscape,english,twoside]{article}
+\usepackage{fontspec}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lmodern}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{alltt}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{array}
+\lstset{frame=none,keepspaces=true,numbers=none,tabsize=2}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\usepackage[cm]{fullpage}
+\setlength{\headsep}{10pt}
+\setlength{\footskip}{20pt}
+\addtolength{\textheight}{-30pt}
+\newminted{scheme}{linenos=false,mathescape,xleftmargin=20px}
+\usepackage{natbib}  \bibliographystyle{chicago}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headheight}{35pt}
+\pagestyle{empty}
+\begin{document}
+\begin{multicols}{2}
+\section*{Trimmed down Scheme Reference}
+\begin{schemecode}
+;; comments
+; text between ; and end of line is skipped
+(quote expression) ; avoid evaluation of expression
+'expresion ; avoid evaluation of expression
+;; data types
+;; boolean
+#f ; false
+#t ; true ; everything that is not #f is true
+(and exp1 exp2 ...) ; short circuit, 
+; do both exp1 and exp2 and ...  evaluate to 
+; a truthy value
+(or exp1 exp2 ....) ; short circuit
+(not expression) ; logical negation
+;; numbers
+12 ; integer
+123.3e12 ; floating point
+;; characters
+#\a #\newline
+;; strings
+"Fred Flinstone"
+;; equality
+(eq? a b) ; are a and b the same object
+(eqv? a b) ; are a and b the same number
+(= a b) ; are a and b the same number
+(equal? "Fred" "Fred") ; do these strings/lists 
+; have the same items/content 
+;; operators
++ - * / > <
+;; lists
+'(1 2 3)
+(list 1 2 3)
+(car '(1 2 3)) ; $\Rightarrow$ 1
+(cdr '(1 2 3)) ; $\Rightarrow$ (2 3)
+(cons 2 (cons 1 '())) ; $\Rightarrow$ (2 1)
+\end{schemecode}
+\vfill
+\columnbreak
+\begin{schemecode}
+;; variables
+(define fred 37) ; binds fred to the value 37
+; create local binding for name
+(let ((name expression)) (+ name 37)) 
+(let* ...) ; in sequence
+(letrec ...) ; recursive procedures
+;; procedures
+(lamda (arguments ...) body)
+(define square (lambda (x) (* x x)))
+;; control flow
+(if predicate then-expression else-expression)
+(cond (test body)
+  (test1 body)
+  (else else-body))
+; load moduele
+(load "somefilename.scm")
+;; testing 
+(check-set-mode! 'report-failed) ; set reporting mode
+; possible options are any of the symbols 
+; off summary report-failed report 
+(check expression => expected) ; basic assertion 
+; check that evaluating expression evaluates to expected
+(check-report) ; produce result output
+;; standard functions
+(null? '()) ; is this the empty list
+(map (lambda (x) (* x x) some-list)) ; create a new list 
+; containing the results of applying the lambda 
+; expression to each of the elements in the list
+(apply proc argument-list) ; apply proc to argument-list
+(modulo 5 3) ; $\Rightarrow$ 2
+(sqrt 9) ; $\Rightarrow$ 3.0
+\end{schemecode}
+\end{multicols}
+\end{document}
