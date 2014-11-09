@@ -628,34 +628,34 @@ Lets first briefly look over the code:
       (car expression)))
   (define calculate 
     (lambda (expr stack)
-      (if (null? expr)
-        "there is nothing to calculate!"
         (cond ((null? expr) (car stack))
               ((operator? expr)
                (let* ((first-operand (cadr stack))
                       (second-operand (car stack))
-                      (result (eval (list 
-                                      (operator expr) 
-                                      first-operand 
-                                      second-operand))))
+                      (result (eval 
+                                (list (operator expr) 
+                                  first-operand 
+                                  second-operand))))
                  (calculate (cdr expr) (cons result (cddr stack)))))
-              (else (calculate (cdr expr) (cons (car expr) stack)))))))
-  (calculate expression '()))
+              (else (calculate (cdr expr) (cons (car expr) stack))))))
+  (if (null? expression)
+    "there is nothing to calculate!"
+    (calculate expression '())))
 \end{schemecode}
 This code contains a few functions that we have not yet discussed:
 \begin{enumerate}
   \item lines 5-8: \texttt{eqv?} tests the equivalency of its argument since here in lines 
     5-8 only symbols are used this means equality
-  \item line 14.16: \texttt{null?} returns true if its parameter is the empty list
-  \item line 18: \texttt{cadr} is a composition of \texttt{cdr} and \texttt{car} 
+  \item line 14: \texttt{null?} returns true if its parameter is the empty list
+  \item line 16: \texttt{cadr} is a composition of \texttt{cdr} and \texttt{car} 
     \begin{equation*}
       \texttt{(cadr alist)} \Rightarrow \texttt{(car (cdr list))}
     \end{equation*}
-  \item line 20: \texttt{eval} evaluates the given list in the same manner as the 
+  \item line 18: \texttt{eval} evaluates the given list in the same manner as the 
     Scheme interpreter would, which means evaluate the first element of the 
     list to a procedure definition evaluate the rest of the elements and 
     supply them as the formal parameters to the procedure.
-  \item line 24: \texttt{cddr} is a composition of \texttt{cdr} with itself
+  \item line 22: \texttt{cddr} is a composition of \texttt{cdr} with itself
     \begin{equation*}
       \texttt{(cddr alist)} \Rightarrow \texttt{(cdr (cdr alist))}
     \end{equation*}
