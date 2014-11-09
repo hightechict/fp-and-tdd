@@ -2,10 +2,13 @@
 
 (define fizzbuzz 
   (lambda (x) 
-    (cond ((= 0 (modulo x 15)) "fizzbuzz")
-          ((= 0 (modulo x 3)) "fizz")
-          ((= 0 (modulo x 5)) "buzz")
-          (else x))))
+    (let ((divisible-by? 
+            (lambda (number divisor)
+              (= 0 (modulo number divisor)))))
+      (cond ((= 0 (modulo x 15)) "fizzbuzz")
+            ((= 0 (modulo x 3)) "fizz")
+            ((= 0 (modulo x 5)) "buzz")
+            (else x)))))
 (let (
       (check-fizzbuzz 
         (lambda (check-value expected)

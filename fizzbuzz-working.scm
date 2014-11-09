@@ -3,14 +3,14 @@
 
 (define fizzbuzz 
   (lambda (x) 
-    (define divisible-by? 
+    (let ((divisible-by? 
       (lambda (divisor number)
-        (= 0 (modulo number divisor))))
+        (= 0 (modulo number divisor)))))
     (cond 
         ((divisible-by? 15 x) "fizzbuzz")
         ((divisible-by? 3 x) "fizz")
         ((divisible-by? 5 x) "buzz")
-          (else x))))
+          (else x)))))
 
 (check (fizzbuzz 1) => 1)
 (check (fizzbuzz 2) => 2)

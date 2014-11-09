@@ -7,41 +7,42 @@
 (define operator? 
   (lambda (expression)
     (let ((token (car expression)))
-      (or (eqv? '+ token)
-          (eqv? '- token)
-          (eqv? '* token)
-          (eqv? '^ token)
+      (or (eq? '+ token)
+          (eq? '- token)
+          (eq? '* token)
+          (eq? '^ token)
           (unary-operator? expression)
-          (eqv? '/ token)))))
+          (eq? '/ token)))))
 
 (define operator 
   (lambda (expression) 
     (let ((oper (car expression)))
-      (cond ((eqv? '^ oper) 'expt)
+      (cond ((eq? '^ oper) 'expt)
             (else oper)))))
 
 (define rpn 
   (lambda (expression)
-    (define evaluate 
-      (lambda (expression . operands)
-        (eval (cons (operator expression) operands))))
+    (letrec (
+      (evaluate 
+        (lambda (expression . operands)
+          (eval (cons (operator expression) operands))))
 
-    (define calculate 
-      (lambda (expr stack)
-          (cond ((null? expr) (car stack))
-                ((unary-operator? expr)
-                 (let* ((first-operand (car stack))
-                        (result (evaluate expr first-operand)))
-                   (calculate (cdr expr) (cons result (cdr stack)))))
-                ((operator? expr)
-                 (let* ((first-operand (cadr stack))
-                        (second-operand (car stack))
-                        (result (evaluate expr first-operand second-operand)))
-                   (calculate (cdr expr) (cons result (cddr stack)))))
-                (else (calculate (cdr expr) (cons (car expr) stack))))))
+      (calculate 
+        (lambda (expr stack)
+            (cond ((null? expr) (car stack))
+                  ((unary-operator? expr)
+                   (let* ((first-operand (car stack))
+                          (result (evaluate expr first-operand)))
+                     (calculate (cdr expr) (cons result (cdr stack)))))
+                  ((operator? expr)
+                   (let* ((first-operand (cadr stack))
+                          (second-operand (car stack))
+                          (result (evaluate expr first-operand second-operand)))
+                     (calculate (cdr expr) (cons result (cddr stack)))))
+                  (else (calculate (cdr expr) (cons (car expr) stack)))))))
     (if (null? expression)
       "there is nothing to calculate!"
-      (calculate expression '()))))
+      (calculate expression '())))))
 
 (check (operator? '(+)) => #t)
 (check (operator? '(-)) => #t)
