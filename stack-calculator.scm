@@ -28,8 +28,6 @@
 
     (define calculate 
       (lambda (expr stack)
-        (if (null? exprression)
-          "there is nothing to calculate!"
           (cond ((null? expr) (car stack))
                 ((unary-operator? expr)
                  (let* ((first-operand (car stack))
@@ -40,8 +38,10 @@
                         (second-operand (car stack))
                         (result (evaluate expr first-operand second-operand)))
                    (calculate (cdr expr) (cons result (cddr stack)))))
-                (else (calculate (cdr expr) (cons (car expr) stack)))))))
-    (calculate expression '())))
+                (else (calculate (cdr expr) (cons (car expr) stack))))))
+    (if (null? expression)
+      "there is nothing to calculate!"
+      (calculate expression '()))))
 
 (check (operator? '(+)) => #t)
 (check (operator? '(-)) => #t)
@@ -65,6 +65,6 @@
 (check (rpn '(6 2 /)) => 3)
 (check (rpn '(3 2 -)) => 1)
 (check (rpn '(2 3 ^ )) => 8)
-(check (rpn '(4 sqrt)) => 2.0)
+(check (rpn '(4 sqrt)) => 2)
 
 (check-report)
