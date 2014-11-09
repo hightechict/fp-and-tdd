@@ -1,3 +1,6 @@
+(load "~/.bin/check.scm")
+(check-set-mode! 'report-failed)
+
 (define (rpn expression)
   (letrec (
     (operator? 
@@ -25,3 +28,7 @@
     (if (null? expression)
       "there is nothing to calculate!"
       (calculate expression '()))))
+
+(check (rpn '()) => )
+
+(check-report)
