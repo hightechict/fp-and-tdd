@@ -1,4 +1,5 @@
 (load "check.scm")
+(check-set-mode! 'report-failed)
 
 (define unary-operator? 
   (lambda (expression)
