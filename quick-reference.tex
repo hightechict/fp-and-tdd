@@ -28,9 +28,13 @@
 \usepackage{natbib}  \bibliographystyle{chicago}
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\headheight}{35pt}
-\pagestyle{empty}
+\fancyhead[L]{\tiny Functional Programming and Test Driven Development}
+\fancyhead[R]{\includegraphics[scale=0.2]{HTLogo}}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
 \begin{document}
 \begin{multicols}{2}
+\section*{A few keyboard shortcuts}
 \subsection*{Diakonos}
 {
 \setlength{\extrarowheight}{1.5pt}
@@ -69,7 +73,7 @@ List buffers           & Ctrl-Alt-B\\ \hline
 \hline
 Enter Copy Mode & Ctrl-a [ \\ \hline
 \hspace{0.5cm} Start selection & <space> \\ \hline
-\hspace{0.5cm} Modify selection & arrow keys \\ \hline
+\hspace{0.5cm} Modify selection & arrow keys, h, j, k, l \\ \hline
 \hspace{0.5cm} Copy selection & <enter> \\ \hline
 Paste & Ctrl-a ] \\ \hline
 Goto next window & Ctrl-a n \\ \hline

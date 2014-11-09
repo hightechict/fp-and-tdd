@@ -318,7 +318,7 @@ already provided for us in the check.scm file. A first test would look like
 this:
 \subsubsection{A first test case}
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check (fizzbuzz 1) => 1)
 (check-report)
 \end{schemecode}
@@ -351,7 +351,8 @@ Error: unbound variable: fizzbuzz
     <eval>	  [check:proc] (thunk)
     <eval>	  (fizzbuzz 1)	<--
 \end{lstlisting}
-Our test can not be interpreted because we have not yet defined our 
+In the rest of this document the command used to generate the test output will 
+be omitted for brevity. Our test can not be interpreted because we have not yet defined our 
 \texttt{fizzbuzz} procedure. Lets look at the code and explain each line 
 one by one:
 
@@ -368,7 +369,7 @@ to keep things simple we will write our production code in the same file as
 our test code. Here is the first implementation of our \texttt{fizzbuzz} 
 function:
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 
 (define fizzbuzz (lambda (x) 1))
 
@@ -377,8 +378,6 @@ function:
 (check-report)
 \end{schemecode}
 \begin{lstlisting}
->run-tests fizzbuzz.scm
-
 (fizzbuzz 1) => 1 ; correct
 
 ; *** checks *** : 1 correct, 0 failed.
@@ -386,7 +385,7 @@ function:
 \subsubsection{The second test case}
 Great our first passing test. Lets add our next test case.  
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 
 (define fizzbuzz (lambda (x) 1))
 
@@ -396,8 +395,6 @@ Great our first passing test. Lets add our next test case.
 (check-report)
 \end{schemecode}
 \begin{lstlisting}
->run-tests fizzbuzz.scm
-
 (fizzbuzz 1) => 1 ; correct
 
 (fizzbuzz 2) => 1 ; *** failed ***
@@ -414,7 +411,7 @@ To save some space in this document we will use the \texttt{report-failed}
 mode of our test library in the next runs. Making this failing test pass is a 
 matter of replacing our constant with a parameter.
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
 (define fizzbuzz (lambda (x) x))
@@ -425,14 +422,12 @@ matter of replacing our constant with a parameter.
 (check-report)
 \end{schemecode}
 \begin{lstlisting}
->run-tests fizzbuzz.scm
-
 ; *** checks *** : 2 correct, 0 failed.  
 \end{lstlisting}
 Excellent. Now lets add our next test case.
 \subsubsection{The third test case}
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
 (define fizzbuzz (lambda (x) x))
@@ -444,8 +439,6 @@ Excellent. Now lets add our next test case.
 (check-report)
 \end{schemecode}
 \begin{lstlisting}
->run-tests fizzbuzz.scm
-
 (fizzbuzz 3) => 3 ; *** failed ***
  ; expected result: "fizz"
 
@@ -476,10 +469,12 @@ undefined.
 Now we can make our failing test pass:
 \subsubsection{Making the third test case pass}
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
-(define fizzbuzz (lambda (x) (if (= 3 x) "fizz" x)))
+(define fizzbuzz 
+  (lambda (x) 
+    (if (= 3 x) "fizz" x)))
 
 (check (fizzbuzz 1) => 1)
 (check (fizzbuzz 2) => 2)
@@ -488,17 +483,17 @@ Now we can make our failing test pass:
 (check-report)
 \end{schemecode}
 \begin{lstlisting}
->run-tests fizzbuzz.scm
-
 ; *** checks *** : 3 correct, 0 failed.
 \end{lstlisting}
 The next interesting case is of course the number 5.  
 \subsubsection{The fourth test case}
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
-(define fizzbuzz (lambda (x) (if (= 3 x) "fizz" x)))
+(define fizzbuzz 
+  (lambda (x) 
+    (if (= 3 x) "fizz" x)))
 
 (check (fizzbuzz 1) => 1)
 (check (fizzbuzz 2) => 2)
@@ -522,10 +517,12 @@ that evaluated to true. A \texttt{cond} expression can have an optional
 evaluated to true.
 \subsubsection{Making the fourth test case pass}
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
-(define fizzbuzz (lambda (x) (cond ((= 3 x) "fizz")
+(define fizzbuzz 
+  (lambda (x) 
+    (cond ((= 3 x) "fizz")
           ((= 5 x) "buzz")
           (else x))))
 
@@ -537,16 +534,15 @@ evaluated to true.
 (check-report)
 \end{schemecode}
 \begin{lstlisting}
->run-tests fizzbuzz.scm
-
-; *** checks *** : 4 correct, 0 failed.  \end{lstlisting}
+; *** checks *** : 4 correct, 0 failed.  
+\end{lstlisting}
 The rest of the kata can now be implemented, all the Scheme constructs that we 
 will need have been introduced. All that we need to know is, does Scheme have 
 something like a `remainder' or `modulus' function. The function to use here 
 is the \texttt{modulo} function. Below you find the finished implementation:
 \subsubsection{The completed solution for our FizzBuzz kata}
 \begin{schemecode}
-(load "check.scm")
+(load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
 (define fizzbuzz 
@@ -571,12 +567,11 @@ is the \texttt{modulo} function. Below you find the finished implementation:
 (check-report)
 \end{schemecode}
 \section{Assignment l: removing code duplication}
-\subsection{Running tests}
-To make running tests easy during this workshop we will be using a 
-\texttt{watchr} script that will automatically run our tests when they are 
-saved. When you start up the virtual machine you will be greated with a split 
-console window. The top asks you which editor you would like to use during 
-this session, the lower part will contain the output of running the our tests.
+\subsection{The work environment}
+When you start the provided virtual machine you are logged in automatically 
+and are presented with a split (tmux) screen. The top pane asks you which editor you 
+would like to use during this session. If you are not familiar with any of the listed editors, we recommend you use Diakonos, it is an easy to use relatively feature rich console editor. A list with keyboard shortcuts is provided for easy referrence. The bottom pane is empty, it is running a \texttt{watchr} script that will automatically run the tests when they are 
+saved. 
 \subsection{DRY-ing up test code using higher order functions}
 During this excercise we will remove some duplication (DRY= Don't Repeat 
 Yourself) from the test code we created earlier using higher order functions 
@@ -632,19 +627,19 @@ Lets first briefly look over the code:
     (lambda (expression) 
       (car expression)))
   (define calculate 
-    (lambda (exp stack)
-      (if (null? expression)
+    (lambda (expr stack)
+      (if (null? expr)
         "there is nothing to calculate!"
-        (cond ((null? exp) (car stack))
-              ((operator? exp)
+        (cond ((null? expr) (car stack))
+              ((operator? expr)
                (let* ((first-operand (cadr stack))
                       (second-operand (car stack))
                       (result (eval (list 
-                                      (operator exp) 
+                                      (operator expr) 
                                       first-operand 
                                       second-operand))))
-                 (calculate (cdr exp) (cons result (cddr stack)))))
-              (else (calculate (cdr exp) (cons (car exp) stack)))))))
+                 (calculate (cdr expr) (cons result (cddr stack)))))
+              (else (calculate (cdr expr) (cons (car expr) stack)))))))
   (calculate expression '()))
 \end{schemecode}
 This code contains a few functions that we have not yet discussed:
