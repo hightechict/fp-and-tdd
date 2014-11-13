@@ -41,4 +41,4 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 [[ $- != *i* ]] && return
-[[ -z "$TMUX"]] && ~/.bin/start-dev.sh
+[[ -z "$TMUX" ]] && ~/.bin/start-dev.sh
