@@ -1,29 +1,15 @@
-;; Binary numbers
-#b100101
-;; Octal numbers
-#o45
-;; Hexadecimal numbers
-#x25
-;; Rational numbers
-23/5
-;; Rational number with Hexadecimals
-#x20/1a 
+;; Integers
+37
+0 
+-42
 ;; Floating point numbers
 1.3552e-12
 .2342
-;; Complex numbers
-1+37i
-37@1.7
-;; Characters
-#\a
-#\newline
-#\j
 ;; Strings
 "Fred Flinstone"
 "Barney Rubbles"
 ;; Symbols
 'Fred
-(string->symbol "Fred Flinstone")
 (eq? 'Fred 'Fred)
 (eq? "Fred" "Fred")
 (equal? "Fred" "Fred")
@@ -47,12 +33,6 @@
 fred
 (define barney "Betty")
 barney
-(let ((a 4) (b 3)) (* a b))
-(let ((a 4) (b (* a a))) (* a b)) 
-(let* ((a 4) (b (* a 3))) (* a b))
-(letrec
-  ((odd? (lambda (x) (if (= x 0) #f (even? (- x 1)))))
-   (even? (lambda (x) (if (= x 0) #t (odd? (- x 1)))))) (odd? 37))
 ;; procedures
 (lambda (x) (* x x))
 ((lambda (x) (* x x)) 2)
