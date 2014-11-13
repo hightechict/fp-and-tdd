@@ -383,6 +383,10 @@ a bit simpler.
 
 (define fizzbuzz (lambda (x) x))
 
+(define check-fizzbuzz 
+  (lambda (value-to-check expected)
+    (check (fizzbuzz value-to-check) => expected)))
+
 (check-fizzbuzz 1 1)
 (check-fizzbuzz 2 2)
 (check-fizzbuzz 3 "fizz")
@@ -427,6 +431,10 @@ Now we can make our failing test pass:
   (lambda (x) 
     (if (= 3 x) "fizz" x)))
 
+(define check-fizzbuzz 
+  (lambda (value-to-check expected)
+    (check (fizzbuzz value-to-check) => expected)))
+
 (check-fizzbuzz 1 1)
 (check-fizzbuzz 2 2)
 (check-fizzbuzz 3 "fizz")
@@ -445,6 +453,10 @@ The next interesting case is of course the number 5.
 (define fizzbuzz 
   (lambda (x) 
     (if (= 3 x) "fizz" x)))
+
+(define check-fizzbuzz 
+  (lambda (value-to-check expected)
+    (check (fizzbuzz value-to-check) => expected)))
 
 (check-fizzbuzz 1 1)
 (check-fizzbuzz 2 2)
@@ -480,6 +492,10 @@ evaluated to true.
           ((= 5 x) "buzz")
           (else x))))
 
+(define check-fizzbuzz 
+  (lambda (value-to-check expected)
+    (check (fizzbuzz value-to-check) => expected)))
+
 (check-fizzbuzz 1 1)
 (check-fizzbuzz 2 2)
 (check-fizzbuzz 3 "fizz")
@@ -505,6 +521,10 @@ us to using this \texttt{modulo} function.
     (cond ((= 3 x) "fizz")
           ((= 5 x) "buzz")
           (else x))))
+
+(define check-fizzbuzz 
+  (lambda (value-to-check expected)
+    (check (fizzbuzz value-to-check) => expected)))
 
 (check-fizzbuzz 1 1)
 (check-fizzbuzz 2 2)
@@ -535,6 +555,10 @@ test pass.
     (cond ((= 0 (modulo x 3)) "fizz")
           ((= 5 x) "buzz")
           (else x))))
+
+(define check-fizzbuzz 
+  (lambda (value-to-check expected)
+    (check (fizzbuzz value-to-check) => expected)))
 
 (check-fizzbuzz 1 1)
 (check-fizzbuzz 2 2)
@@ -574,37 +598,20 @@ Replace the predicates in the \texttt{cond} with applications of our new
 \subsection{Finish the \texttt{fizzbuzz} implementation}
 Finish the \texttt{fizzbuzz} implementation, start by adding a test case, 
 watch it fail and then make it pass. 
-Below you find the finished implementation:
-\vfill
-\pagebreak
-\subsection{The completed solution for our FizzBuzz kata}
-\begin{schemecode}
-(load "~/.bin/check.scm")
-(check-set-mode! 'report-failed)
-
-(define divisible-by?
-  (lambda (divisor number)
-    (= 0 (modulo number divisor))))
-
-(define fizzbuzz 
-  (lambda (x) 
-    (cond ((divisible-by? 15 x) "fizzbuzz")
-          ((divisible-by? 3 x) "fizz")
-          ((divisible-by? 5 x) "buzz")
-          (else x))))
-
-(check-fizzbuzz 1 1)
-(check-fizzbuzz 2 2)
-(check-fizzbuzz 3 "fizz")
-(check-fizzbuzz 5 "buzz")
-(check-fizzbuzz 6 "fizz")
-(check-fizzbuzz 7 7)
-(check-fizzbuzz 10 "buzz")
-(check-fizzbuzz 15 "fizzbuzz")
-(check-fizzbuzz 30 "fizzbuzz")
-
-(check-report)
-\end{schemecode}
+\subsection{Reduce duplication further using \texttt{map}}
+Now we will remove even more duplication by using the \texttt{map} and 
+\texttt{apply} functions. We saw the \texttt{apply} function in the 
+introduction it takes a function and a list as arguments and applies the 
+supplied function to the supplied arguments in the list. The \texttt{map} 
+function takes a function and a list as its parameters and returns a new list 
+consisting of the function applied to each of the elements in the list.
+Here is a short example
+\begin{lstlisting}
+#;46>(map (lambda (x) (* x x)) '(1 2 3))
+(1 4 9)
+\end{lstlisting}
+The assignment is to define a list of test cases and run them using the 
+\texttt{map} and \texttt{apply} functions.
 \section{Assignment 2: Legacy code}
 Some of you may know the legendary Hewlett-Packard calculators from the good 
 old days that use Reverse Polish Notation (RPN). A form of notation that first 
@@ -626,49 +633,50 @@ Lets first briefly look over the code:
 (load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
 
-(define operator
-  (lambda (expression) 
-    (car expression)))
-
-(define operator? 
-  (lambda (expression)
-    (define token (car expression))
-    (or (eq? '+ token)
-        (eq? '- token)
-        (eq? '* token)
-        (eq? '/ token))))
-
-(define calculate (lambda (expr stack)
-    (cond ((null? expr) (car stack))
-          ((operator? expr)
-            (define first-operand (cadr stack))
-            (define second-operand (car stack))
-            (define result (eval (list 
-                                   (operator expr) 
-                                   first-operand 
-                                   second-operand)))
-            (calculate (cdr expr) (cons result (cddr stack))))
-          (else (calculate (cdr expr) (cons (car expr) stack))))))
-
 (define (rpn expression)
-    (if (null? expression)
-      "there is nothing to calculate!"
-      (calculate expression '())))
+  (define operator
+    (lambda (expression) 
+      (car expression)))
+  (define operator? 
+    (lambda (expression)
+      (define token (car expression))
+      (or (eq? '+ token)
+          (eq? '- token)
+          (eq? '* token)
+          (eq? '/ token))))
+  (define calculate (lambda (expr stack)
+      (cond ((null? expr) (car stack))
+            ((operator? expr)
+              (define first-operand (cadr stack))
+              (define second-operand (car stack))
+              (define result (eval (list 
+                                     (operator expr) 
+                                     first-operand 
+                                     second-operand)))
+              (calculate (cdr expr) (cons result (cddr stack))))
+            (else (calculate (cdr expr) (cons (car expr) stack))))))
+  (if (null? expression)
+    "there is nothing to calculate!"
+    (calculate expression '())))
+
+(check (rpn '()) => )
 
 (check-report)
 \end{schemecode}
 This code contains a few functions that we have not yet discussed:
 \begin{enumerate}
-  \item line 17: \texttt{null?} returns true if its parameter is the empty list
-  \item line 19: \texttt{cadr} is a composition of \texttt{cdr} and \texttt{car} 
+\item line 11: \texttt{or} returns the first non \texttt{\#f} argument of the 
+  supplied arguments without evaluating the rest of the arguments
+  \item line 16: \texttt{null?} returns true if its parameter is the empty list
+  \item line 18: \texttt{cadr} is a composition of \texttt{cdr} and \texttt{car} 
     \begin{equation*}
       \texttt{(cadr alist)} \Rightarrow \texttt{(car (cdr list))}
     \end{equation*}
-  \item line 21: \texttt{eval} evaluates the given list in the same manner as the 
+  \item line 20: \texttt{eval} evaluates the given list in the same manner as the 
     Scheme interpreter would, which means evaluate the first element of the 
     list to a procedure definition evaluate the rest of the elements and 
     supply them as the formal parameters to the procedure.
-  \item line 25: \texttt{cddr} is a composition of \texttt{cdr} with itself
+  \item line 24: \texttt{cddr} is a composition of \texttt{cdr} with itself
     \begin{equation*}
       \texttt{(cddr alist)} \Rightarrow \texttt{(cdr (cdr alist))}
     \end{equation*}
@@ -683,6 +691,16 @@ contain the \texttt{\^{}} operator which should calculate the power function.
 \begin{equation*}
 \texttt{(rpn '(2 3 \^{}))} \Rightarrow 2^{3} \Rightarrow 8 
 \end{equation*}
+The Scheme function for exponentiation is \texttt{expt}.
+\begin{lstlisting}
+#;48> (expt 2 3)
+8
+\end{lstlisting}
+Start by promoting the \texttt{operator?} and \texttt{operator} functions to 
+top-level binding such that they can be tested in isolation. Write a few test 
+cases for each of them. Add the test cases for the new behavior in the 
+red,green, refactor cycle, start with the \texttt{operator?} and 
+\texttt{operator} function. Proceed with the \texttt{rpn} function.
 \subsection{Adding the \texttt{sqrt} function}
 Up to now the calculator only understands binary operators, extend the 
 calculator such that expressions can contain the \texttt{sqrt} operator that 
@@ -709,5 +727,18 @@ The Scheme function that calculates the square root of its argument is called
     In the body of the \texttt{lambda} expression the \texttt{rest} parameter 
     will be bound to a list containing the parameters$_{n+1}$ and beyond.
 \end{enumerate}
+\section{Optional: Extend the rules of the fizzbuzz kata}
+The rules for the fizzbuzz kata can be extended like so
+\begin{enumerate}
+  \item if $x$ is divisible by 3 return the string "fizz"
+  \item if $x$ is divisible by 5 return the string "buzz"
+  \item if $x$ is divisible by both 3 and 5 return the string "fizzbuzz"
+  \item if the sequence of digits that denote $x$ contains 3 return \texttt{"fizz"} 
+  \item if the sequence of digits that denote $x$ contains 5 return \texttt{"buzz"} 
+  \item if the sequence of digits that denote $x$ contains both 3 and 5 return \texttt{"fizzbuzz"} 
+  \item otherwise return $x$
+\end{enumerate}
+Adapt the \texttt{fizzbuzz} function such that it adheres to this new set of 
+rules. Do this by following the red, green, refactor cycle.
 \bibliography{handout}
 \end{document}
