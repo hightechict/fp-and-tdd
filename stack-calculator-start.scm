@@ -30,6 +30,6 @@
       "there is nothing to calculate!"
       (calculate expression '())))
 
-(check (rpn '(12 12 *)) => 144)
+(check (rpn '()) => )
 
 (check-report)
