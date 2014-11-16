@@ -247,8 +247,9 @@ result:
 \subsection{Our first test}
 Since this workshop is about Test Driven Development we will start with our 
 first test. We will be using a Scheme `standard library' called SRFI 78. It is 
-already provided for us in the check.scm file. A first test would look like 
-this:
+already provided for us in the check.scm file. To save some space in this 
+document we will use the \texttt{report-failed} mode of our test library in 
+the next runs. A first test would look like this:
 \subsubsection{A first test case}
 \begin{schemecode}
 (load "~/.bin/check.scm")
@@ -338,8 +339,7 @@ Great our first passing test. Lets add our next test case.
  ; expected result: 2
 \end{lstlisting}
 \subsubsection{Making our second test case pass}
-To save some space in this document we will use the \texttt{report-failed} 
-mode of our test library in the next runs. Making this failing test pass is a 
+Making this failing test pass is a 
 matter of replacing our constant with a parameter.
 \begin{schemecode}
 (load "~/.bin/check.scm")
@@ -357,6 +357,29 @@ matter of replacing our constant with a parameter.
 \end{lstlisting}
 Excellent. Now lets refactor our (test) code a bit to make adding test cases 
 a bit simpler.
+\section{Assignment 1: Remove duplication from our test cases}
+\subsection{The work environment}
+When you start the provided virtual machine you are logged in automatically 
+and are presented with a split (tmux) screen. The top pane asks you which 
+editor you would like to use during this session. If you are not familiar with 
+any of the listed editors, we recommend you use Diakonos, it is an easy to use 
+relatively feature rich console editor. A list with keyboard shortcuts is 
+provided for easy reference. The bottom pane is empty, it is running a 
+\texttt{watchr} script that will automatically run the tests when they are 
+saved.  
+\subsection{Writing the \texttt{check-fizzbuzz} function}
+The code for this exercise is in the \texttt{fizzbuzz.scm} file. By choosing 
+any of the available editors from the menu, it will be opened for you 
+automatically. Write a function \texttt{check-fizzbuzz} that takes as 
+parameters the value for which we want to check fizzbuzz and the expected 
+outcome. The function should call the check function with the result of 
+applying fizzbuzz and the expected value. Replace the two test cases with 
+calls to the function you just created. You will get 5 minutes for this small 
+exercise after which we'll discuss the solution and continue with implementing 
+the kata.
+\vfill
+\pagebreak
+\subsection{Solution for assignment 1}
 \begin{schemecode}
 (load "~/.bin/check.scm")
 (check-set-mode! 'report-failed)
@@ -571,17 +594,12 @@ test pass.
 \begin{lstlisting}
 ; *** checks *** : 5 correct, 0 failed.
 \end{lstlisting}
-\section{Assignment 1: Adding the next test case}
-\subsection{The work environment}
-When you start the provided virtual machine you are logged in automatically 
-and are presented with a split (tmux) screen. The top pane asks you which editor you 
-would like to use during this session. If you are not familiar with any of the listed editors, we recommend you use Diakonos, it is an easy to use relatively feature rich console editor. A list with keyboard shortcuts is provided for easy reference. The bottom pane is empty, it is running a \texttt{watchr} script that will automatically run the tests when they are 
-saved. 
+\section{Assignment 2: Adding the next test case}
 \subsection{Add the next test and make it pass}
-The code for this exercise is in the \texttt{fizzbuzz.scm} file.  By choosing 
-any of the available editors from the menu, it will be opened for you 
-automatically. Your first assignment is to add the next test case and make it 
-pass. When all your tests pass you can move on to the next assignment.
+The code for this exercise is in the \texttt{fizzbuzz-second.scm} file. Open 
+it using the editor you choose at the start of the session. Your next 
+assignment is to add the next test case and make it pass. When all your tests 
+pass you can move on to the next assignment.
 \subsection{Introduce a helper function}
 \subsubsection{Writing \texttt{divisible-by?}}
 Up to now we have neglected to refactor the code 
@@ -592,7 +610,7 @@ a \texttt{divisible-by?} function. That can be used like so:
 #t
 \end{lstlisting}
 \subsubsection{Call the new \texttt{divisible-by?} function from 
-\texttt{fizzbuz}}
+\texttt{fizzbuzz}}
 Replace the predicates in the \texttt{cond} with applications of our new 
 \texttt{divisible-by?} function and make sure all tests still pass.
 \subsection{Finish the \texttt{fizzbuzz} implementation}
@@ -696,11 +714,14 @@ The Scheme function for exponentiation is \texttt{expt}.
 #;48> (expt 2 3)
 8
 \end{lstlisting}
-Start by promoting the \texttt{operator?} and \texttt{operator} functions to 
-top-level binding such that they can be tested in isolation. Write a few test 
-cases for each of them. Add the test cases for the new behavior in the 
-red,green, refactor cycle, start with the \texttt{operator?} and 
-\texttt{operator} function. Proceed with the \texttt{rpn} function.
+\begin{enumerate}
+  \item Promote the \texttt{operator?} and \texttt{operator} functions to 
+top-level bindings such that they can be tested in isolation. 
+  \item Write a few test cases for each of them. 
+  \item Add support for the \texttt{\^{}} operator to the \texttt{operator?} function.
+  \item Add support for the \texttt{\^{}} operator to the \texttt{operator} function. 
+  \item Add support for the \texttt{\^{}} operator to the \texttt{rpn} function.
+\end{enumerate}
 \subsection{Adding the \texttt{sqrt} function}
 Up to now the calculator only understands binary operators, extend the 
 calculator such that expressions can contain the \texttt{sqrt} operator that 
@@ -714,8 +735,8 @@ The Scheme function that calculates the square root of its argument is called
   \item Create the \texttt{unary-operator?} function that can tell if the 
     first element in the expression is a unary operator or not. 
   \item Use this function in the \texttt{operator?} function.
-  \item Extend the \texttt{operator} function to return the \texttt{sqrt} function as a 
-    translation for \texttt{sqrt}.
+  \item Extend the \texttt{operator} function to return the \texttt{sqrt} 
+    function as a translation for \texttt{sqrt}.
   \item Extend the \texttt{calculate} function to take unary operators into 
     account.
   \item Introduce an evaluate function that calls \texttt{eval}. You need to 
@@ -735,10 +756,28 @@ The rules for the fizzbuzz kata can be extended like so
   \item if $x$ is divisible by both 3 and 5 return the string "fizzbuzz"
   \item if the sequence of digits that denote $x$ contains 3 return \texttt{"fizz"} 
   \item if the sequence of digits that denote $x$ contains 5 return \texttt{"buzz"} 
-  \item if the sequence of digits that denote $x$ contains both 3 and 5 return \texttt{"fizzbuzz"} 
+  \item if the sequence of digits that denote $x$ contains both 3 and 5 return 
+    \texttt{"fizzbuzz"} 
   \item otherwise return $x$
 \end{enumerate}
 Adapt the \texttt{fizzbuzz} function such that it adheres to this new set of 
 rules. Do this by following the red, green, refactor cycle.
+\begin{enumerate}
+  \item Write a function \texttt{digits} that returns the list of digits (as 
+    integers) that is used to denote the input integer. Recall from 
+    mathematics that numbers in the decimal system are denoted as a sum of 
+    powers of 10. E.g. $137 = 1 \times 10^{2} + 3 \times 10^{1} + 7 \times 
+    10^{0}$.
+  \item Write a function \texttt{contains?} that takes an element and a list 
+    as it's parameters and returns \texttt{\#t} if the list contains the given 
+    element and \texttt{\#f} otherwise.
+  \item Combine the \texttt{digits} and \texttt{contains?} functions into a 
+    \texttt{contains-digit?} function that takes a digit (an integer $x$ with 
+    $0 \leq x < 10$) and an integer and returns \texttt{\#t} if the digit is 
+    part of the decimal notation of the given number and \texttt{\#f} 
+    otherwise.
+  \item Finish the fizzbuzz kata with the extended rules using the helper 
+    functions you've just created.
+\end{enumerate}
 \bibliography{handout}
 \end{document}

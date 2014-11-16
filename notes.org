@@ -15,9 +15,33 @@
 - dynamically typed
 - almost no syntax, easy to explain
 - small
+- different from what we usually use
+*** Scheme is a LISP dialect
+- (LISt Processing)
+- the second high level language
+- created in 1958.
+- garbage collected
+- Scheme created by Guy Steele and Gerald Sussman at MIT
+- Scheme introduced throug a series of papers from 1975-1980
+- Standardized by IEEE
+- Most widely used R5RS Revised Report on the Algorithmic Language
+  Scheme 1998
+*** Who are you?
+**** Who has ever used a functional language?
+**** Who has ever used a LISP dialect?
+**** Who has experience with TDD?
+**** Who uses TDD an a day to day basis?
 ** 5-15 Scheme the language
-*** Scheme is a LISP dialect (LISt Processing)
-*** The list is the central datastructure of the syntax and the language
+*** Numbers
+- integers and floating point numbers look like you would expect
+*** Strings
+- are delimeted by double quotes
+*** Symbols
+- Symbols can be thought of as labels that can be easily compared
+- Symbols are interned strings that can be compared by pointer
+  comparison
+*** Lists
+-The list is the central datastructure of the syntax and the language
 ***** Definition
 - '(' elem elem ')'
 - repl:
@@ -37,37 +61,15 @@
 ***** Deconstructing lists
 - repl: (car '(1 2 3))
 - repl: (cdr '(1 2 3))
-*** Creating functions, Lambda expressions
-- repl: (lambda (x) (* x x))
-- repl: ((lambda (x) (* x x)) 2)
-- repl: (lambda (x y) (+ x y) 26 11)
 *** Definitions, Bindings
 - repl: (define square-it (lambda (x) (* x x)))
 - repl: (square-it 2)
 - repl: (define fred 37)
 - repl: (square-it fred)
-*** Local bindings
--repl: (let ((a 4) (b 3)) (* a b))
--repl: (let ((a 4) (b (* a a))) (* a b))
--repl: (letrec ((a 4) (b (* a a))) (* a b))
--repl:
-#+BEGIN_SRC scheme
-  (define length 
-    (lambda (x y) 
-      (let ((square 
-             (lambda (x) (* x x)))) 
-        (sqrt (+ (square x) (square y))))))
-#+END_SRC
-- repl:
-#+BEGIN_SRC scheme
-  (define root 
-    (lambda (a b c) 
-      (let ((disc (- (* b b) (* 4 a c)))
-            (denom (* 2 a))) 
-        (list 
-         (/ (+ (- b) (sqrt disc)) denom) 
-         (/ (- (- b) (sqrt disc)) denom)))))
-#+END_SRC
+*** Creating functions, Lambda expressions
+- repl: (lambda (x) (* x x))
+- repl: ((lambda (x) (* x x)) 2)
+- repl: (lambda (x y) (+ x y) 26 11)
 *** if, cond
 - repl: (if #t 2 3)
 - repl: (if #f 2 3)
@@ -80,12 +82,9 @@
             (else 0))))
 #+END_SRC scheme
 *** Tests
-- repl: (require-extension test)
-- repl: (test 37 (+ 33 3))
-- repl: (test "Fred" "Barney")
-- repl: (test-assert #f)
-- repl: (test-error #f)
-- repl: (test-error (a b))
+- repl: (load "~/.bin/check.scm")
+- repl: (check 3 => 3)
+- repl: (check "Fred" => "Barney")
 ** 15-20 Test Driven Development
 *** Three rules of test driven development:
 1. You are not allowed to write any production code unless it is to
@@ -99,9 +98,7 @@
   same file
 ***** Running tests
 - prompt: run-tests
-- automatic prompt watchr tests.watchr
-- the test module is already loaded for you so no require statement is
-  needed
+- automatic prompt watchr run-tests.watchr
 
 ** 20-50 Fizzbuzz
 *** 20-35 Simple fizzbuzz 
@@ -114,6 +111,5 @@ For a given natural number greater zero return
 - Rewrite the test cases as a list and use the map function to 
   apply your test function to each of the test cases.
 *** 45-50 Plenair show dried up test code
-- use of the let bindings
 - use of the exctract function
 - use of the apply function
