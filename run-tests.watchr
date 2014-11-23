@@ -4,5 +4,5 @@ watch('(.*\.scm)$') { |md|
   system "clear"
   sleep(1.0/3)
   print file
-  system "csi -b -q -r5rs-syntax -n #{file}" 
+  system "csi -b -q -r5rs-syntax -w #{file}" 
 }
