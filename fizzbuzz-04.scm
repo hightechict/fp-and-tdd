@@ -20,7 +20,8 @@
 (define contains? 
   (lambda (element alist)
     (if (null? alist) #f
-      (or (eq? (car alist) element) (contains? element (cdr alist))))))
+      (or (eq? (car alist) element) 
+          (contains? element (cdr alist))))))
 
 (define contains-digit? 
   (lambda (digit number) 
@@ -58,9 +59,14 @@
 (check (digits 1) => '(1))
 (check (digits 2) => '(2))
 (check (digits 11) => '(1 1))
+(check (digits 123) => '(1 2 3))
+(check (digits 12345) => '(1 2 3 4 5))
 
+(check (contains? 1 '()) => #f)
 (check (contains? 1 '(1)) => #t)
 (check (contains? 1 '(2 3 1)) => #t)
+(check (contains? 1 '(2 3 4)) => #f)
+
 (check (contains-digit? 1 1) => #t)
 (check (contains-digit? 1 2313) => #t)
 
