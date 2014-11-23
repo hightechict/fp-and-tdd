@@ -618,6 +618,8 @@ some examples of using this calculator.
 #;48>(rpn '(37 42 23 + *))
 2405
 \end{lstlisting}
+\vfill
+\pagebreak
 Lets first briefly look over the code:
 \begin{schemecode}
 (load "~/.bin/check.scm")
@@ -636,17 +638,21 @@ Lets first briefly look over the code:
         (eq? '/ token))))
 
 (define calculate 
-  (lambda (expr stack)
-    (cond ((null? expr) (car stack))
-          ((operator? expr)
+  (lambda (expression stack)
+    (cond ((null? expression) (car stack))
+          ((operator? expression)
             (define first-operand (cadr stack))
             (define second-operand (car stack))
             (define result (eval (list 
-                                   (operator expr) 
+                                   (operator expression) 
                                    first-operand 
                                    second-operand)))
-            (calculate (cdr expr) (cons result (cddr stack))))
-          (else (calculate (cdr expr) (cons (car expr) stack))))))
+            (calculate 
+              (cdr expression) 
+              (cons result (cddr stack))))
+          (else (calculate 
+                  (cdr expression) 
+                  (cons (car expression) stack))))))
 
 (define (rpn expression)
   (if (null? expression)
@@ -670,14 +676,14 @@ This code contains a few functions that we have not yet discussed:
     Scheme interpreter would, which means evaluate the first element of the 
     list to a procedure definition evaluate the rest of the elements and 
     supply them as the formal parameters to the procedure.
-  \item line 26: \texttt{cddr} is a composition of \texttt{cdr} with itself
+  \item line 28: \texttt{cddr} is a composition of \texttt{cdr} with itself
     \begin{equation*}
       \texttt{(cddr alist)} \Rightarrow \texttt{(cdr (cdr alist))}
     \end{equation*}
 \end{enumerate}
 \subsection{Building the safety net}
 Start by writing some tests that validate the current behavior of the 
-\texttt{rpn} function. Open the \texttt{stack-calculotor.scm} file and add 
+\texttt{rpn} function. Open the \texttt{stack-calculator.scm} file and add 
 some tests to it.When you feel you have captured enough of the current 
 behavior of the function proceed to the next assignment.
 \subsection{Adding the \texttt{\^{}} operator}
@@ -723,7 +729,7 @@ The Scheme function that calculates the square root of its argument is called
     \end{equation*}
     In the body of the \texttt{lambda} expression the \texttt{rest} parameter 
     will be bound to a list containing the parameters$_{n+1}$ and beyond.
-  \item Use this evaluate function to simplify the \texttt{calculate} 
+  \item Use this \texttt{evaluate} function to simplify the \texttt{calculate} 
     function.
 \end{enumerate}
 \section{Optional: add support for the Greatest Common Divisor}
@@ -779,10 +785,9 @@ stops. The final nonzero remainder $r_{N-1}$ is the greatest common divisor of
 $a$ and $b$. The number $N$ cannot be infinite because there are only a finite 
 number of nonnegative integers between the initial remainder $r_{0}$ and zero. 
 \end{quote}
-\subsection{Write the \texttt{gcd} function}
-Write a (recursive) function \texttt{gcd} that calculates the GCD of it's two 
-parameters $a$ and $b$. For simplicity you may assume that $b$ is smaller than 
-$a$.
+\subsection{Write the \texttt{greatest-common-divisor} function}
+Write a (recursive) function \texttt{greatest-common-divisor} that calculates the GCD of it's two 
+parameters $a$ and $b$. 
 \subsection{Add support for the \texttt{gcd} function to the calculator}
 Use the function created in the previous assignment to extend the calculator 
 with a \texttt{gcd} function.
