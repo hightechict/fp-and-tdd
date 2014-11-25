@@ -44,7 +44,7 @@
 This section will briefly describe a small portion of the Scheme language that 
 will be used in this workshop.
 Before we start, a few typographical conventions, all text written in a 
-\texttt{monospaced font} is either a Scheme keyword or text provided or 
+\texttt{monospace font} is either a Scheme keyword or text provided or 
 returned from the Scheme interpreters REPL (Read Eval Print Loop), a console 
 application that evaluates Scheme expressions as you provide them. The prompt 
 of the REPL starts with a hash \texttt{\#}, followed by a semicolon \texttt{;}, the 
@@ -56,7 +56,8 @@ Since Scheme is a LISP (LISt Processing) dialect the central syntactical
 element in the language is the list. But before we dive into lists lets look 
 at Scheme's `primitive' expressions, that is expression that evaluate to 
 themselves. In Scheme these are: booleans, numbers, characters, strings, 
-symbols and vectors.
+symbols and vectors. During this session we are only going to booleans, 
+numbers, strings and symbols so we will limit ourselves to those.
 \subsection{Boolean values}
 Scheme has the boolean values \texttt{\#f} and \texttt{\#t} for false and true 
 respectively. In boolean expressions all values except \texttt{\#f} are 
@@ -161,10 +162,10 @@ list \texttt{()}.  \end{itemize}
 Lists can be deconstructed using the \texttt{car} and \texttt{cdr} procedures. 
 These names stem from the original Lisp implementation in the late 1950's.  
 \begin{itemize}
-\item \texttt{car} short for "Contents of the Address part of Register number" 
+\item \texttt{car} short for "Contents of the Address part of Register number",
   is referred to as \texttt{head} or \texttt{first} in some languages.
 \item \texttt{cdr} short for "Contents of the Decrement part of Register 
-  number" is referred to as \texttt{tail} or \texttt{rest} in some languages.
+  number", is referred to as \texttt{tail} or \texttt{rest} in some languages.
 \end{itemize} \begin{lstlisting}
 #;29> (car '(1 2 3))
 1
@@ -227,8 +228,8 @@ don't have to deconstruct the list as you can see in the example above.
 \section{Fizzbuzz}
 \subsection{Writing a solution for the basic Fizzbuzz kata}
 Now that we have covered the most basic forms of Scheme we will look at some 
-more Scheme syntactic forms using the Fizzbuzz kata as a vehicle. The result 
-of completing this kata will be used in your next assignment.
+more Scheme syntactic forms using the Fizzbuzz kata as a vehicle. This kata 
+will also be used in the next couple of exercises.
 \subsubsection{The assignment}
 Write a function that for each positive integer $x$ will produce the following 
 result:
@@ -286,7 +287,7 @@ one by one:
 \begin{enumerate}
   \item line 1: loads our unit testing library of choice, the check library
   \item line 2: configures the test library to only report failures, for 
-  brevitiy
+  brevity
   \item line 4: this is our first assert you could read this as: verify that calling 
     the \texttt{fizzbuzz} function with \texttt{1} will result in the value 
     \texttt{1}
@@ -366,12 +367,13 @@ The code for this exercise is in the \texttt{fizzbuzz.scm} file. By choosing
 any of the available editors from the menu, it will be opened for you 
 automatically. Write a function \texttt{check-fizzbuzz} that takes as 
 parameters the value for which we want to check fizzbuzz and the expected 
-outcome. The function should call the check function with the result of 
-applying fizzbuzz and the expected value. Replace the two test cases with 
+outcome. The function should call the \texttt{check} function with the result of 
+applying \texttt{fizzbuzz} and the expected value. Replace the two test cases with 
 calls to the function you just created. You will get 5 minutes for this small 
 exercise after which we'll discuss the solution and continue with implementing 
-the kata. So don't turn the page just yet. Ahh, you've finished the assignment 
-turn the page and check your solution.
+the kata. So don't turn the page just yet.\ldots \\
+\vdots \\
+OK, you've finished the assignment turn the page and check your solution.
 \vfill
 \pagebreak
 \subsection{Solution for assignment 1}
@@ -614,8 +616,14 @@ the stack and when it encounters an operator pops the 2 operands of the stack
 applies the operator and pushes the result back onto the stack. Below you find 
 some examples of using this calculator.
 \begin{lstlisting}
-#;47>(load "stack-calculator.scm")
-#;48>(rpn '(37 42 23 + *))
+#;47> (load "stack-calculator.scm")
+#;48> (rpn '(1 2 +))
+3
+#;49> (rpn '(3 4 *))
+12
+#;50> (rpn '(3 3 * 4 4 * +))
+25
+#;51> (rpn '(37 42 23 + *))
 2405
 \end{lstlisting}
 \vfill
@@ -684,7 +692,7 @@ This code contains a few functions that we have not yet discussed:
 \subsection{Building the safety net}
 Start by writing some tests that validate the current behavior of the 
 \texttt{rpn} function. Open the \texttt{stack-calculator.scm} file and add 
-some tests to it.When you feel you have captured enough of the current 
+some tests to it. When you feel you have captured enough of the current 
 behavior of the function proceed to the next assignment.
 \subsection{Adding the \texttt{\^{}} operator}
 Extend the \texttt{rpn} function such that it can understand expressions that 
@@ -742,8 +750,6 @@ divides both a and b without leaving a remainder. For example:
 2
 #;51> (gcd 12 9)
 3
-#;52> (gcd 12 20)
-4
 \end{lstlisting}
 Around 300 B.C Euclid described an algorithm for calculating the GCD that is 
 still in use today. Wikipedia \cite{euclid} describes the algorithm  as follows:
@@ -753,7 +759,7 @@ still in use today. Wikipedia \cite{euclid} describes the algorithm  as follows:
  counts the steps of the algorithm, starting with zero. Thus, the initial step 
  corresponds to $k = 0$, the next step corresponds to $k = 1$, and so on.
 
- Each step begins with two nonnegative remainders $r_{k-1}$ and $r_{k-2}$. Since 
+ Each step begins with two non-negative remainders $r_{k-1}$ and $r_{k-2}$. Since 
  the algorithm ensures that the remainders decrease steadily with every step, 
  $r_{k-1}$ is less than its predecessor $r_{k-2}$. The goal of the $k^{th}$ step is to find a 
  quotient $q_{k}$ and remainder $r_{k}$ such that the equation is satisfied
@@ -783,13 +789,18 @@ Since the remainders decrease with every step but can never be negative, a
 remainder $r_{N}$ must eventually equal zero, at which point the algorithm 
 stops. The final nonzero remainder $r_{N-1}$ is the greatest common divisor of 
 $a$ and $b$. The number $N$ cannot be infinite because there are only a finite 
-number of nonnegative integers between the initial remainder $r_{0}$ and zero. 
+number of non-negative integers between the initial remainder $r_{0}$ and zero. 
 \end{quote}
 \subsection{Write the \texttt{greatest-common-divisor} function}
-Write a (recursive) function \texttt{greatest-common-divisor} that calculates the GCD of it's two 
-parameters $a$ and $b$. 
+Write a (recursive) function \texttt{greatest-common-divisor} (note that 
+Scheme already defines the \texttt{gcd} function, so choose a name $\neq$ \texttt{gcd}) 
+that calculates the GCD of it's two parameters $a$ and $b$. 
 \subsection{Add support for the \texttt{gcd} function to the calculator}
 Use the function created in the previous assignment to extend the calculator 
 with a \texttt{gcd} function.
+\section{Colofon}
+A big thanks to Bart de Boer and Edwin Hanegraaf for reviewing this material. 
+All source code that was used for this workshop can be found at:\\ 
+\texttt{\href{https://github.com/hightechict/fp-and-tdd}{https://github.com/hightechict/fp-and-tdd}}.
 \bibliography{handout}
 \end{document}

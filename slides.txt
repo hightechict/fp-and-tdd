@@ -1,7 +1,6 @@
 ;; Integers
 37
 0 
--42
 ;; Floating point numbers
 1.3552e-12
 .2342
@@ -42,4 +41,4 @@ barney
 ;; applying procedures
 (apply (lambda (x y) (* x y)) '(3 4))
 ((lambda (x y) (* x y)) (car '(3 4)) (car (cdr '(3 4))))
-
+;; Next the fizzbuzz kata
