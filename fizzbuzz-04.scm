@@ -66,6 +66,8 @@
 (check (contains? 1 '(1)) => #t)
 (check (contains? 1 '(2 3 1)) => #t)
 (check (contains? 1 '(2 3 4)) => #f)
+(check (contains? 3 '(2 3 4)) => #t)
+(check (contains? 3 '(2 7 4)) => #f)
 
 (check (contains-digit? 1 1) => #t)
 (check (contains-digit? 1 2313) => #t)
