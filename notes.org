@@ -9,9 +9,63 @@
 #+EXPORT_EXCLUDE_TAGS: noexport
 #+STARTUP: 
 * Functional Programming and Test Driven Development
-** 0-5 Intro Scheme 
+** Introduction speakers
+*** Bart de Boer
+- first grade developer with over 16 years experience
+- currently solution architect at Seachange
+*** Bas Bossink
+- software developer since 2000
+- currently developer at Phillips Handheld Diagnostics
+** Agenda
+*** Introduction
+*** Scheme basics
+*** Introducing the fizzbuzz kata
+*** You: write your first function
+*** Conditional expressions
+*** You: finish fizzbuzz kata
+*** You: Work with legacy code: an RPN calculator
+** Introduction
+*** What is TDD?
+- Who can define TDD for me?
+*** Who uses TDD?
+- By a show of hands who has experience with TDD?
+- Who uses TDD on a day to day basis?
+*** What is Functional Programming?
+**** Wikipedia:
+In computer science, functional programming is a programming
+paradigm, a style of building the structure and elements of computer
+programs, that treats computation as the evaluation of mathematical
+functions and avoids changing-state and mutable data. 
+**** Avoid changing state and mutable data
+- no side effects
+- Haskell incorporates this into it's type system with Monads
+- the use of bindings, can only assign a value to a variable once
+**** Mathematical functions
+- if you put the same thing in the same thing will come out, always
+- these type of functions are sometimes called 'pure' functions
+**** Functions as values
+- functions can be passed as parameters to functions
+- functions can be returned as a result from a function
+*** Who uses FP?
+- Who has experience in working in a functional programming language?
+- Who has experience in working with a Lisp dialect?
+- Who has experience with JavaScript?
+  - JavaScript is a scheme with prototypical inherintance and an at
+    the time popular syntax
+*** Where is FP a good fit
+- Parrallelism, concurrency
+  - Erlang, Map-Reduce
+- Data transformations
+  - SQL
+- Everything 'stateless'
+  - financial calculations
+  - driver verification
+  - static analysis of code
+  - hardware design
+  - web programming
+** Intro Scheme 
 *** Why Scheme?
-- purly functional
+- purely functional
 - dynamically typed
 - almost no syntax, easy to explain
 - small
@@ -26,12 +80,7 @@
 - Standardized by IEEE
 - Most widely used R5RS Revised Report on the Algorithmic Language
   Scheme 1998
-*** Who are you?
-**** Who has ever used a functional language?
-**** Who has ever used a LISP dialect?
-**** Who has experience with TDD?
-**** Who uses TDD an a day to day basis?
-** 5-15 Scheme the language
+** Scheme the language
 *** Numbers
 - integers and floating point numbers look like you would expect
 *** Strings
@@ -44,77 +93,176 @@
 -The list is the central datastructure of the syntax and the language
 ***** Definition
 - '(' elem elem ')'
-- repl:
-#+BEGIN_SRC scheme
- (1 2 3)
-#+END_SRC
 - the first element is interpreted as a procedure name or syntactic
   form, the rest of the list are the arguments
-- repl: (+ 1 2 3)
 ***** Creating lists
-- repl: (list 1 2 3)
-- repl: (quote (1 2 3))
-- repl '(1 2 3)
+- using quotation
+- using the list function
 ***** Building lists from elements
-- repl: (cons 1 (cons 2 (cons 3 '())))
-- repl: (cons 1 2)
+- using cons, which stands for construct
 ***** Deconstructing lists
-- repl: (car '(1 2 3))
-- repl: (cdr '(1 2 3))
+- car Contents of the Address part of Register number
+  - head
+  - first
+- cdr Contents of the Decrement part of Register number
+  - tail
+  - rest
 *** Definitions, Bindings
-- repl: (define square-it (lambda (x) (* x x)))
-- repl: (square-it 2)
-- repl: (define fred 37)
-- repl: (square-it fred)
+- define syntactical form
+- can also be used to define local bindings
+  Definitions may also appear at the front of a lambda body or body
+  of any form derived from lambda. These internal definitions must
+  precede the expressions in the body. Any lambda expression whose
+  body begins with definitions may be transformed into an equivalent
+  lambda expression without such definitions, by rewriting the body
+  as a letrec expression. That is, a lambda expression of the form
+
+(lambda formals
+  (define var val) ...
+  exp1 exp2 ...)
+
+may be expressed in the equivalent form below.
+
+(lambda formals
+  (letrec ((var val) ...)
+    exp1 exp2 ...))))))))
 *** Creating functions, Lambda expressions
-- repl: (lambda (x) (* x x))
-- repl: ((lambda (x) (* x x)) 2)
-- repl: (lambda (x y) (+ x y) 26 11)
-*** if, cond
-- repl: (if #t 2 3)
-- repl: (if #f 2 3)
-- repl: 
-#+BEGIN_SRC scheme
-  (define abs 
-    (lambda (x) 
-      (cond ((< x 0) (- x))
-            ((> x 0) x)
-            (else 0))))
-#+END_SRC scheme
-*** Tests
-- repl: (load "~/.bin/check.scm")
-- repl: (check 3 => 3)
-- repl: (check "Fred" => "Barney")
-** 15-20 Test Driven Development
-*** Three rules of test driven development:
-1. You are not allowed to write any production code unless it is to
-   make a failing unit test pass.
-2. You are not allowed to write any more of a unit test than is
-   sufficient to fail; and compilation failures are failures.
-3. You are not allowed to write any more production code than is
-   sufficient to pass the one failing unit test.
-*** Setup for this workshop
-- for simplicity we will write the production and test code in the
-  same file
-***** Running tests
-- prompt: run-tests
-- automatic prompt watchr run-tests.watchr
+- lambda refers back to the Lamdba calculus
+- Lambda calculus (also written as λ-calculus) is a formal system in
+  mathematical logic and computer science for expressing computation
+  based on function abstraction and application using variable binding
+  and substitution. First formulated by Alonzo Church to formalize the
+  concept of effective computability, lambda calculus found early
+  successes in the area of computability theory, such as a negative
+  answer to Hilbert's Entscheidungsproblem. Lambda calculus is a
+  conceptually simple universal model of computation (Turing showed in
+  1937 that Turing machines equalled the lambda calculus in
+  expressiveness). The name derives from the Greek letter lambda (λ)
+  used to denote binding a variable in a function. The letter itself
+  is arbitrary and has no special meaning.
+- combining define and lambda you have a way to create functions
+*** Applying procedures
+- first element in the list
+- apply function
+  - takes a function and a list as parameters and applies the given
+    function with the elements of the list used as the parameter
+    values for the function.
+  - it can sometimes be handy when the arguments to a function you
+    want to call happens to be in a list
+  - you don't have to deconstruct the list
+** The fizzbuzz kata
+- switch to ppt
+- a childrens game to teach about division
+  - Players take turns to count incrementally, replacing any number
+    divisible by three with the word "fizz", and any number divisible
+    by five with the word "buzz".
+*** Rules
+- write a function that for each positive number x returns
+- "fizz" if x is divisible by 3
+- "buzz" if x is divisible by 5
+- "fizzbuzz" if x is divisible by both 3 and 5
+- x otherwise
+*** Implementing the Kata
+- switch to start-fizzbuzz
+- line 1 loads the test library
+- line 2 set the 'reporting mode' of the library to only report failures
+- line 4 our first test case, read as assert that applying fizzbuzz
+  with parameter 1 has 1 as a result
+- line 6 print the test report
+- save
+- a failing test, no fizzbuzz function is defined yet, let's define it
+- implement
+- save
+- hurray our first passing test
+- add next test case 2
+- save
+- failure
+- fixit using parameter
+- save
+- great passing tests
+- 2 cycles of red,green, refactor
+- oh no we forgot to refactor
+- your first assignment refactor the test-code, look at page 8 of the
+  handout
+- two references have also been supplied:
+  - keyboard shortcuts
+  - scheme quick reference
+- start with Section 3 Assignment 1
+- you have approximately 5 minutes, after which I will explain a
+  couple of conditional expressions
+- vim :bn
+- the next interesting case is 3, add it
+- save
+- great a failing test, to make it pass we will use an if statement
+- if is what you would expect by now a list with three or four elements:
+  - if
+  - a predicate
+  - the then expression
+  - an optional else expression
+- implement the if
+- save
+- great our test passes
+- the next case is 5
+- write the test
+- save
+- great a failing test
+- in other languages you would use a switch/if-else-if construct,
+  Scheme has the cond expression, cond is short for condition
+- cond takes a variable number of arguments each argument is a list containing:
+  - a predicate as the first element, or the else keyword
+  - an expression as the second element
+- cond evaluates each predicate in order, if a predicate evaluates
+  to #t the value of the cond is the value of the corresponding expression
+- optionally an else clause can be used as a catch all
+- implement cond
+- save
+- excellent another succeeding test
+- now you can finish the kata
+- continue in the handout on page 12 section 4 assignment 2
+- plenary
+- let's look at a possible soluction
+*** Wrap up of basic fizzbuzz
+- switch to fizzbuzz-with apply
+- nice way to denote your tests
+- without using attributes or other compile time only magic
+- the map function abstracts away the notion of iterating over a list
+** Assignment 3: Extending the rules for the fizzbuzz kata
+- now the same rules also apply if the number contains the digit 3 or
+  5
+- look at page 13 section 5 Assigment 3
+- try to implement these rules using the suggested steps
+- plenary
+- this is a possible implementation
+- switch to extended-fizzbuzz
+- lots of small easy to test functions
+- no side effects
+- no cluttered dependencies
+- no global state
+- all the things that make testing more difficult
+** Assignment 4: Legacy code
+- lets look at the code
+- switch to start-stackcalculator
+- line 11 or does what you expect, it short circuits and returns the
+  first non #f value in the list of arguments
+- line 18: null? returns true if the parameter is the empty list
+- line 20 cadr is the car of the cdr or the first element of the
+  rest, the second element
+- line 22: eval, evaluetes the given list as the Scheme interpreter would:
+  - evaluate the first argument to a procedure
+  - evaluate the rest of the list elements
+  - apply the procedure using the evaluated elements as the formal
+    parameters to the procedure
+- line 28 cddr is the cdr of the cdr which is the list without the
+  first two elements
+- line 33 should be changed to the version in the handout if you used
+  the memory stick
+** Conclusion
+- small function help, to take baby steps which in turn support tdd
+- no side effects, no global state, no TDD pain
+- Higher order functions can help to reduce redundancy in code
+- no dependencies that need to be setup, no TDD pain
 
-** 20-50 Fizzbuzz
-*** 20-35 Simple fizzbuzz 
-For a given natural number greater zero return
-- "fizz" if the number is dividable by 3
-- "buzz" if the number is dividable by 5
-- "fizzbuzz" if the number is dividable by 3 and 5
-*** 35-45 Refactor the test code
-- Minimize repitition in the test code by extracting a method
-- Rewrite the test cases as a list and use the map function to 
-  apply your test function to each of the test cases.
-*** 45-50 Plenair show dried up test code
-- use of the exctract function
-- use of the apply function
-
-** Practice session
+* Practice session
 *** assignments
     CLOCK: [2014-11-23 Sun 16:28]--[2014-11-23 Sun 18:20] =>  1:52
 

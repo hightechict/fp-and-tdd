@@ -30,10 +30,11 @@
                   (cdr expression) 
                   (cons (car expression) stack))))))
 
-(define (rpn expression)
-  (if (null? expression)
-    "there is nothing to calculate!"
-    (calculate expression '())))
+(define rpn 
+  (lamdba (expression)
+    (if (null? expression)
+      "there is nothing to calculate!"
+      (calculate expression '()))))
 
 (check (rpn '()) => )
 

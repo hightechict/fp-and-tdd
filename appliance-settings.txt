@@ -1,0 +1,13 @@
+Product: Functional Programming and Test Driven Development
+Product-URL: https://github.com/hightechict/fp-and-tdd
+Vendor: High tech ict
+Vendor-URL: http://www.hightechict.nl/
+Description: 
+Virtual appliance to support the "Functional Programming and Test Driven Development a match made in heaven" workshop.
+
+user: fp
+password: tdd
+
+user: root 
+password: tdd 
+License: Creative Commons Naamsvermelding-NietCommercieel-GelijkDelen 4.0 Internationaal-licentie
